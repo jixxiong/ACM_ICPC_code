@@ -4,6 +4,7 @@ using namespace std;
 #define int long long
 #define all(x) (x).begin(),(x).end()
 
+// O(nlogn)
 struct SA {
 	vector<int> sa, rk, ht;
 
