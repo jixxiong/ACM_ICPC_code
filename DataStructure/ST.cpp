@@ -20,8 +20,3 @@ struct ST{
 		return min(st[l][s],st[r-(1<<s)+1][s]);
 	}
 };
-
-int main(){
-    
-    return 0; 
-}
