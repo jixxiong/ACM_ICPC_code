@@ -17,15 +17,17 @@ struct Trie{
 	inline int trans(char ch){ 
 		return ch-'a';
 	}
+	inline int new_node(){
+		end.emplace_back(0);
+		nxt.emplace_back(Node{});
+		return ++tot;
+	}
 	void insert(char* s){
 		int p=0;
 		for(int i=1;s[i];++i){
 			auto ch=trans(s[i]);
-			if(!nxt[p][ch]){
-				cnt.emplace_back(0);
-				nxt.emplace_back(Node{});
-				nxt[p][ch]=++tot;
-			}
+			if(!nxt[p][ch])
+				nxt[p][ch]=new_node();
 			p=nxt[p][ch];
 		}
 		end[p]=true;
