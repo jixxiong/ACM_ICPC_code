@@ -22,7 +22,7 @@ struct Z:vector<int>{
 
 // ExKMP => s 的每一个后缀和 t 的 lcp
 struct ExKMP:vector<int>{
-    // O(n) => ExKMP
+	// O(n) => ExKMP
 	ExKMP(const char* s,int n,const char* t,int m):vector<int>(n+1){
 		auto& p=(vector<int>&)*this;
 		Z z(t,m);
