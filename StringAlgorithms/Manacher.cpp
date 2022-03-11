@@ -25,6 +25,6 @@ struct Manacher{
 int main(){
     string str;
     cin>>str;
-	printf("%d\n",Manacher(str.c_str(),str.length()).max_len);
+	printf("%d\n",Manacher(str.c_str()-1,str.length()).max_len);
 	return 0; 
 }
