@@ -22,10 +22,10 @@ struct Z:vector<int>{
 
 // ExKMP => s 的每一个后缀和 t 的 lcp
 struct ExKMP:vector<int>{
+	Z z;
 	// O(n) => ExKMP
-	ExKMP(const char* s,int n,const char* t,int m):vector<int>(n+1){
+	ExKMP(const char* s,int n,const char* t,int m):vector<int>(n+1),z(t,m){
 		auto& p=(vector<int>&)*this;
-		Z z(t,m);
 		for(int i=1,l=0,r=0;i<=n;++i){
 			if(i<=r) p[i]=min(z[i-l+1],r-i+1);
 			while(i+p[i]<=n&&s[i+p[i]]==t[p[i]+1]) ++p[i];
@@ -39,7 +39,7 @@ char s[20000010],t[20000010];
 int main(){
 	scanf("%s%s",s+1,t+1);
 	int n=strlen(s+1),m=strlen(t+1);
-	Z z(t,m);
 	ExKMP p(s,n,t,m);
+	Z& z=p.z;
 	return 0; 
 }
