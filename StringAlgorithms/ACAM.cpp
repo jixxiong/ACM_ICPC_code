@@ -6,14 +6,14 @@ void fo(F fst,L...lst) { cerr<<fst<<' '; fo(lst...); }
 #define all(x) (x).begin(), (x).end()
 using ll=long long;
 
-// AC×Ô¶¯»ú
-// ÇóÔÚÎÄ±¾´®ÖĞ£¬Ò»¸ö×ÖµäÖĞÓĞ¶àÉÙµ¥´Ê³öÏÖÁË
+// ACè‡ªåŠ¨æœº
+// æ±‚æ–‡æœ¬ä¸²ä¸­å‡ºç°äº†å¤šå°‘å­—å…¸ä¸­çš„å•è¯
 template<int size=26>
 struct ACAM{
 	using Node=array<int,size>;
 	vector<Node>nxt;
 	vector<int>val;
-	vector<int>f; // fail Ö¸Õë
+	vector<int>f; // fail Ö¸æŒ‡é’ˆ
 	int tot;
 	inline int trans(char ch){
 		return ch-'a'; 
