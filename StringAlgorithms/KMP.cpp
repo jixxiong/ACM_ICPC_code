@@ -19,7 +19,7 @@ struct PrefixBorder:vector<int>{
 };
 
 // 输出匹配的位置 s => 文本串; t => 模式串
-void match(const char* s,int n,const char* t,int m){
+void kmp(const char* s,int n,const char* t,int m){
 	PrefixBorder next(t,m);
 	for(int i=1,j=0;i<=n;++i){
 		while(j&&s[i]!=t[j+1]) j=next[j];
@@ -32,6 +32,6 @@ char s[1000010],t[1000010];
 
 int main(){
 	scanf("%s%s",s+1,t+1);
-	match(s,strlen(s+1),t,strlen(t+1));
+	kmp(s,strlen(s+1),t,strlen(t+1));
 	return 0; 
 }
