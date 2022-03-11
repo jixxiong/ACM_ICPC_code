@@ -4,7 +4,7 @@ using namespace std;
 struct ST{
 	vector<vector<int>>st;
 	ST(vector<int>A):st(A.size()){
-        assert((int)A.size()>1);
+		assert((int)A.size()>1);
 		int n=A.size()-1;
 		for(int i=1;i<=n;++i){
 			st[i].resize(__lg(n)+1);
