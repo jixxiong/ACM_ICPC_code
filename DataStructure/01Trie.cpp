@@ -12,13 +12,13 @@ struct Trie{
 	vector<char> end; // 代表该节点是否为一个串的结尾节点
 	vector<Node> nxt;
 	int tot;
-	Trie():cnt(1),nxt(1),tot(0){ }
+	Trie():end(1),nxt(1),tot(0){ }
 	void insert(int x){
 		int p=0;
 		for(int i=int_len;i>=0;--i){
 			auto ch=(x>>i)&1;
 			if(!nxt[p][ch]){
-				cnt.emplace_back(0);
+				end.emplace_back(0);
 				nxt.emplace_back(Node{});
 				nxt[p][ch]=++tot;
 			}
