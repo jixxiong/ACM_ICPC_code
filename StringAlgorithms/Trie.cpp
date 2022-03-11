@@ -9,10 +9,10 @@ using ll=long long;
 template<int size=26>
 struct Trie{
 	using Node=array<int,size>;
-	vector<int> cnt; // 节点经过次数
+	vector<char> end; // 代表该节点是否为一个串的结尾节点
 	vector<Node> nxt;
 	int tot;
-	Trie():cnt(1),nxt(1),tot(0){ }
+	Trie():end(1),nxt(1),tot(0){ }
 	// 从字符集到下标的映射
 	inline int trans(char ch){ 
 		return ch-'a';
@@ -27,8 +27,8 @@ struct Trie{
 				nxt[p][ch]=++tot;
 			}
 			p=nxt[p][ch];
-			++cnt[p];
 		}
+		end[p]=true;
 	}
 	bool query(char* s){
 		int p=0;
@@ -38,7 +38,7 @@ struct Trie{
 				return false;
 			p=nxt[p][ch];
 		}
-		return true;
+		return end[p];
 	}
 };
 
