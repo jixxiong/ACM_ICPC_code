@@ -8,6 +8,7 @@ using ll=long long;
 
 // AC自动机
 // 求文本串中出现了多少字典中的单词
+// luoguP3808
 template<int size=26>
 struct ACAM{
 	using Node=array<int,size>;
@@ -73,3 +74,8 @@ int32_t main() {
 	printf("%d\n",ac.query(str));
 	return 0;
 }
+
+
+
+
+//--------------------------------------------------------------
