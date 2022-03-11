@@ -9,12 +9,10 @@ using ll=long long;
 template<int int_len=30>
 struct Trie{
 	using Node=array<int,2>;
-	vector<char> end; // 代表该节点是否为一个串的结尾节点
 	vector<Node> nxt;
 	int tot;
 	Trie():nxt(1),tot(0){ }
 	inline int new_node(){
-		end.emplace_back(0);
 		nxt.emplace_back(Node{});
 		return ++tot;
 	}
@@ -26,7 +24,6 @@ struct Trie{
 				nxt[p][ch]=new_node();
 			p=nxt[p][ch];
 		}
-		end[p]=true;
 	}
 	bool query(int x){
 		int p=0;
@@ -36,7 +33,7 @@ struct Trie{
 				return false;
 			p=nxt[p][ch];
 		}
-		return end[p];
+		return true;
 	}
 };
 
