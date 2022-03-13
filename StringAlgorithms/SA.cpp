@@ -4,7 +4,7 @@ using namespace std;
 #define int long long
 #define all(x) (x).begin(),(x).end()
 
-// O(nlogn) 
+// O(nlogn) => SA 
 struct SA {
 	vector<int>sa,rk,ht;
 	template<typename T>
@@ -38,7 +38,7 @@ struct SA {
 };
 
 
-// ST for SA and lcp
+// ST for SA and static lcp => lcp(i,j) in O(1)
 struct ST{
 	vector<vector<int>>st;
 	ST(vector<int>A):st(A.size()){ // height 
@@ -52,6 +52,7 @@ struct ST{
 				st[i][j]=min(st[i][j-1],st[i+(1<<(j-1))][j-1]);
 	}
 	int qry(int l,int r){ // lcp(l,r)
+		if(l==r) return -1;
 		if(l>r)swap(l,r);
 		l++;
 		int s=__lg(r-l+1);
