@@ -1,3 +1,85 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+void fo(){ cerr<<endl; } template<class fst,class...lst>
+void fo(fst F, lst... L) { cerr<<F<<" "; fo(L...); }
+#define all(x) x.begin(),x.end()
+using ll=long long;
+
+template<int int_len=30>
+struct Trie{
+	using Node=array<int,2>;
+	vector<int> lm,rm;
+	vector<Node> nxt;
+	vector<int>&A;
+	int tot;
+	Trie(vector<int>&A):lm(1),rm(1),nxt(1),A(A),tot(0){
+		lm.reserve(200000*60);
+		rm.reserve(200000*60);
+		nxt.reserve(200000*60);
+	}
+	inline int new_node(){
+		lm.emplace_back(0);
+		rm.emplace_back(0);
+		nxt.emplace_back(Node{});
+		return ++tot;
+	}
+	void insert(int x,int idx){
+		int p=0;
+		for(int i=int_len;i>=0;--i){
+			auto ch=(x>>i)&1;
+			if(!nxt[p][ch])
+				lm[nxt[p][ch]=new_node()]=idx;
+			p=nxt[p][ch];
+			rm[p]=idx;
+		}
+	}
+	int query(int x,int p){
+		int rt=0;
+		int ret=0;
+		for(int i=int_len;i>=0;--i){
+			auto ch=(x>>i)&1;
+			if(nxt[rt][ch]&&nxt[rt][ch]!=p)
+				rt=nxt[rt][ch];
+			else{
+				ret|=1<<i;
+				rt=nxt[rt][!ch];
+			}
+		}
+		return ret;
+	}
+	ll dnc(int p){ // 分治算法，启发式合并
+		if(!(nxt[p][0]||nxt[p][1]))
+			return 0;
+		ll ret=0;
+		for(int i=0;i<2;++i)
+			if(nxt[p][i])
+				ret+=dnc(nxt[p][i]);
+		if(nxt[p][0]&&nxt[p][1]){
+			int mn=numeric_limits<int>::max();
+			for(int i=lm[nxt[p][0]];i<=rm[nxt[p][0]];++i)
+				mn=min(mn,query(A[i],nxt[p][0]));
+			ret+=mn;
+		}
+		return ret;
+	}
+};
+
+int32_t main(){
+	int n;
+	scanf("%d",&n);
+	vector<int>A(n);
+	for(int i=0;i<n;++i){
+		scanf("%d",&A[i]);
+	}
+	sort(all(A));
+	Trie trie(A);
+	for(int i=0;i<n;++i){
+		trie.insert(A[i],i);
+	}
+	printf("%lld\n",trie.dnc(0));
+	return 0;
+}
 
 /* B算法 + Trie 纯纯的B算法，常数太大了，没有用到01Trie树和XOR的性质
 
