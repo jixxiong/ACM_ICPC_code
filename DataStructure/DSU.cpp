@@ -7,8 +7,8 @@ void fo(fst F, lst... L) { cerr<<F<<" "; fo(L...); }
 using ll=long long;
 
 struct DSU:vector<int>{
-	vector<int>&arr;
-	DSU(int n):vector<int>(n),arr(*this){
+	#define arr (*this)
+	DSU(int n):vector<int>(n){
 		for(int i=0;i<n;++i)
 			arr[i]=i;
 	}
@@ -20,8 +20,13 @@ struct DSU:vector<int>{
 		if(fx!=fy)
 			arr[fx]=fy;
 	}
+	void clear(int n){
+		if(size()<n) resize(n);
+		for(int i=0;i<n;++i)
+			arr[i]=i;
+	}
+	#undef arr
 };
-
 int main(){
     
     return 0; 

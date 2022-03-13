@@ -1,3 +1,6 @@
+
+/* B算法 + Trie 纯纯的B算法，常数太大了，没有用到01Trie树和XOR的性质
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -6,6 +9,17 @@ void fo(fst F, lst... L) { cerr<<F<<" "; fo(L...); }
 #define all(x) x.begin(),x.end()
 using ll=long long;
 
+inline char nc(){
+	static char buf[100000],*p1=buf,*p2=buf;
+	return p1==p2&&(p2=(p1=buf)+fread(buf,1,100000,stdin),p1==p2)?EOF:*p1++;
+}
+inline int read(){
+	char ch=nc();int sum=0;
+	while(!(ch>='0'&&ch<='9'))ch=nc();
+	while(ch>='0'&&ch<='9')sum=sum*10+ch-48,ch=nc();
+	return sum;
+}
+
 template<int int_len=30>
 struct Trie{
 	using Node=array<int,2>;
@@ -13,9 +27,14 @@ struct Trie{
 	vector<int> end;
 	vector<Node> nxt;
 	int tot;
-	Trie():cnt(1),end(1),nxt(1),tot(0){ }
+	Trie():cnt(1),end(1),nxt(1),tot(0){
+		cnt.reserve(200000*60);
+		nxt.reserve(200000*60);
+		end.reserve(200000*60);
+	}
 	inline int new_node(){
 		cnt.emplace_back(0);
+		end.emplace_back(0);
 		nxt.emplace_back(Node{});
 		return ++tot;
 	}
@@ -54,8 +73,8 @@ struct Trie{
 };
 
 struct DSU:vector<int>{
-	vector<int>&arr;
-	DSU(int n):vector<int>(n),arr(*this){
+	#define arr (*this)
+	DSU(int n):vector<int>(n){
 		for(int i=0;i<n;++i)
 			arr[i]=i;
 	}
@@ -67,51 +86,75 @@ struct DSU:vector<int>{
 		if(fx!=fy)
 			arr[fx]=fy;
 	}
+	void clear(int n){
+		for(int i=0;i<n;++i)
+			arr[i]=i;
+	}
+	#undef arr
+};
+
+struct Edge{
+	int u,v,d;
+    friend bool operator==(const Edge&o1,const Edge&o2) {
+        return o1.u==o2.u&&o1.v==o2.v&&o1.d==o2.d;
+    }
 };
 
 int main(){
 	int n;
 	scanf("%d",&n);
-	vector<int>A(n+1);
-	Trie<30> trie;
-	for(int i=1;i<=n;++i){
+	vector<int>A(n);
+	Trie trie;
+	for(int i=0;i<n;++i){
 		scanf("%d",&A[i]);
 		trie.insert(A[i],i);
 	}
-	vector<vector<int>>G(n); // 下标从0开始
-	for(int i=1;i<=n;++i)
-		G[i-1].emplace_back(i);
+	vector<vector<int>>G(n,vector<int>(1));
+	for(int i=0;i<n;++i){
+		G[i][0]=i;
+	}
 	ll ret=0;
+	vector<int>id(n),hs(n);
+	vector<vector<int>>nG;
+	vector<Edge>st(2*n);
+	DSU dsu(n);
 	while(G.size()>1){
-		set<array<int,3>>st;
+		for(int i=0;i<(int)G.size();++i)
+			for(auto x:G[i])
+				id[x]=i;
+		int sttop=0;
 		for(int i=0;i<(int)G.size();++i){
 			for(auto x:G[i])
 				trie.remove(A[x]);
 			int mn=numeric_limits<int>::max();
 			int k=-1;
 			for(auto x:G[i]){
-				auto [y,idx]=trie.query(x);
+				auto [y,idx]=trie.query(A[x]);
 				if(y<mn){
 					mn=y;
 					k=idx;
 				}
 			}
-			st.insert(array<int,3>{min(k,i),max(k,i),mn});
+			st[sttop++]=Edge{min(i,id[k]),max(i,id[k]),mn};
 			for(auto x:G[i])
 				trie.insert(A[x],x);
 		}
-		DSU dsu(G.size());
-		for(auto v:st){
-			ret+=v[2];
-			dsu.merge(v[0],v[1]);
+		for(int i=0;i<sttop;++i){
+			auto&& [u,v,d]=st[i];
+			int fu=dsu.find(u),fv=dsu.find(v);
+			if(fu==fv)
+				continue;
+			ret+=d;
+			dsu[fu]=fv;
 		}
-		map<int,int>mp;
-		vector<vector<int>>nG;
+		int tot=0;
+		fill(hs.begin(),hs.begin()+G.size(),-1);
+		vector<vector<int>>().swap(nG);
 		auto get=[&](int x){
-			if(mp.count(x))
-				return mp[x];
+			if(~hs[x])
+				return hs[x];
 			else
-				return nG.emplace_back(vector<int>()),mp[x]=mp.size();
+				return nG.emplace_back(vector<int>()),hs[x]=tot++;
 		};
 		for(int i=0;i<(int)G.size();++i){
 			int u=get(dsu.find(i));
@@ -119,7 +162,10 @@ int main(){
 				nG[u].emplace_back(x);
 		}
 		G=nG;
+        dsu.clear(G.size());
 	}
 	printf("%lld\n",ret);
 	return 0;
 }
+
+*/
