@@ -4,7 +4,7 @@ using namespace std;
 #define int long long
 #define all(x) (x).begin(),(x).end()
 
-// O(nlogn)
+// O(nlogn) Print Version with lost of blank ssspaces
 struct SA {
 	vector<int> sa, rk, ht;
 
@@ -45,6 +45,7 @@ struct SA {
 };
 
 
+// O(nlogn) template version 
 struct SA {
 	vector<int>sa,rk,ht;
 	template<typename T>
@@ -78,7 +79,7 @@ struct SA {
 };
 
 
-
+// O(nlogn) with more constants
 struct SA{
 	vector<int>sa,ht,rk;
 	SA(int *s,int n):sa(n+1),ht(n+1),rk(2*n+1){
@@ -114,9 +115,10 @@ struct SA{
 	}
 };
 
+// ST for SA and lcp
 struct ST{
 	vector<vector<int>>st;
-	ST(vector<int>A):st(A.size()){
+	ST(vector<int>A):st(A.size()){ // height 
 		int n=A.size()-1;
 		for(int i=1;i<=n;++i){
 			st[i].resize(__lg(n)+1);
@@ -126,7 +128,7 @@ struct ST{
 			for(int i=1;i+(1<<j)-1<=n;++i)
 				st[i][j]=min(st[i][j-1],st[i+(1<<(j-1))][j-1]);
 	}
-	int qry(int l,int r){
+	int qry(int l,int r){ // lcp(l,r)
 		if(l>r)swap(l,r);
 		l++;
 		int s=__lg(r-l+1);
