@@ -13,11 +13,7 @@ struct Trie{
 	vector<Node> nxt;
 	vector<int>&A;
 	int tot;
-	Trie(vector<int>&A):lm(1),rm(1),nxt(1),A(A),tot(0){
-		lm.reserve(200000*60);
-		rm.reserve(200000*60);
-		nxt.reserve(200000*60);
-	}
+	Trie(vector<int>&A):lm(1),rm(1),nxt(1),A(A),tot(0){ }
 	inline int new_node(){
 		lm.emplace_back(0);
 		rm.emplace_back(0);
