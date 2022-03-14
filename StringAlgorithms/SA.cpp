@@ -5,9 +5,8 @@ template<typename T,int sigma=300>
 struct SA{
 	vector<int>sa,rk,ht;
 	// O(n) => suffix array
-	// Ensure that str[n+1] is the unique lexicographically smallest character in str.
-	// Moreover, the max element should not be larger than the size of the array
-	// this means you should discretize the array before
+	// str[n+1] 为最小字符
+	// 若对整数数组求SA应当先进行离散化
 	SA(T* str,int n){
 		const int SIZE=max(sigma,n)+2;
 		sa.resize(SIZE),rk.resize(SIZE),ht.resize(SIZE);
