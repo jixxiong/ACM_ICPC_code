@@ -1,12 +1,12 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+// O(n) => suffix array
+// str[n+1] 为最小字符
+// 若对整数数组求SA应当先进行离散化
 template<typename T,int sigma=300>
 struct SA{
 	vector<int>sa,rk,ht;
-	// O(n) => suffix array
-	// str[n+1] 为最小字符
-	// 若对整数数组求SA应当先进行离散化
 	SA(T* str,int n){
 		const int SIZE=max(sigma,n)+2;
 		sa.resize(SIZE),rk.resize(SIZE),ht.resize(SIZE);
@@ -56,10 +56,7 @@ struct SA{
 			while (i+h<n&&j+h<n&&s[i+h]==s[j+h]) h++;
 			if ((ht[rk[i]]=h)) h--;
 		}
-		for(int i=n-1;i>=1;--i) {
-			rk[i]=rk[i-1];
-			sa[i]++;
-		}
+		for(int i=n-1;i>=1;--i) ++sa[i],rk[i]=rk[i-1];
 	}
 };
 
@@ -98,42 +95,40 @@ int main() {
 	return 0;
 }
 
-// O(nlogn) => SA 
-struct SA {
-	vector<int>sa,rk,ht;
-	template<typename T>
-	SA(T *s,int n):sa(n+1),rk(n+1),ht(n+1){ // 传入离散化后的数组
-		int m=*max_element(s+1,s+1+n);
-		vector<int>tp(n+1),buk(n+1);
-		for(int i=1;i<=n;++i) rk[i]=s[i],tp[i]=i;
-		auto radix_sort=[&](int m){
-			fill_n(buk.begin(),m+1,0);
-			for(int i=1;i<=n;++i) buk[rk[i]]++;
-			for(int i=1;i<=m;++i) buk[i]+=buk[i-1];
-			for(int i=n;i>=1;--i) sa[buk[rk[tp[i]]]--]=tp[i];
-		};
-		radix_sort(m);
-		for(int w=1,p=0;p<n;m=p,w<<=1,p=0) {
-			for (int i=1;i<=w;++i) tp[++p]=n-w+i;
-			for (int i=1;i<=n;++i) 
-				if(sa[i]>w) tp[++p]=sa[i]-w;
-			radix_sort(m);
-			copy(all(rk),tp.begin());
-			rk[sa[1]]=p=1;
-			for(int i=2;i<=n;++i)
-				rk[sa[i]]=tp[sa[i-1]]==tp[sa[i]]&&tp[sa[i-1]+w]==tp[sa[i]+w]?p:++p;
-		}
-		for (int i=1,k=0;i<=n;++i) {
-			if(k)--k;
-			while(i+k<=n&&sa[rk[i]-1]+k<=n&&s[i+k]==s[sa[rk[i]-1]+k])++k;
-			ht[rk[i]]=k;
-		}
-	}
-};
+// // O(nlogn) => SA 
+// struct SA {
+// 	vector<int>sa,rk,ht;
+// 	template<typename T>
+// 	SA(T *s,int n):sa(n+1),rk(n+1),ht(n+1){ // 传入离散化后的数组
+// 		int m=*max_element(s+1,s+1+n);
+// 		vector<int>tp(n+1),buk(n+1);
+// 		for(int i=1;i<=n;++i) rk[i]=s[i],tp[i]=i;
+// 		auto radix_sort=[&](int m){
+// 			fill_n(buk.begin(),m+1,0);
+// 			for(int i=1;i<=n;++i) buk[rk[i]]++;
+// 			for(int i=1;i<=m;++i) buk[i]+=buk[i-1];
+// 			for(int i=n;i>=1;--i) sa[buk[rk[tp[i]]]--]=tp[i];
+// 		};
+// 		radix_sort(m);
+// 		for(int w=1,p=0;p<n;m=p,w<<=1,p=0) {
+// 			for (int i=1;i<=w;++i) tp[++p]=n-w+i;
+// 			for (int i=1;i<=n;++i) 
+// 				if(sa[i]>w) tp[++p]=sa[i]-w;
+// 			radix_sort(m);
+// 			copy(all(rk),tp.begin());
+// 			rk[sa[1]]=p=1;
+// 			for(int i=2;i<=n;++i)
+// 				rk[sa[i]]=tp[sa[i-1]]==tp[sa[i]]&&tp[sa[i-1]+w]==tp[sa[i]+w]?p:++p;
+// 		}
+// 		for (int i=1,k=0;i<=n;++i) {
+// 			if(k)--k;
+// 			while(i+k<=n&&sa[rk[i]-1]+k<=n&&s[i+k]==s[sa[rk[i]-1]+k])++k;
+// 			ht[rk[i]]=k;
+// 		}
+// 	}
+// };
 
-
-
-signed main(){
+// signed main(){
 	
-	return 0;
-}
+// 	return 0;
+// }
