@@ -4,13 +4,14 @@ using namespace std;
 template<typename T,int sigma=300>
 struct SA{
 	vector<int>sa,rk,ht;
-	// Ensure that str[n] is the unique lexicographically smallest character in str.
+	// O(n) => suffix array
+	// Ensure that str[n+1] is the unique lexicographically smallest character in str.
 	// Moreover, the max element should not be larger than the size of the array
 	// this means you should discretize the array before
 	SA(T* str,int n){
-		const int size=max(sigma,n)+2;
-		sa.resize(size),rk.resize(size),ht.resize(size);
-		vector<int>s(size<<1),t(size<<1),p(size),cur(size),cnt(size);
+		const int SIZE=max(sigma,n)+2;
+		sa.resize(SIZE),rk.resize(SIZE),ht.resize(SIZE);
+		vector<int>s(SIZE<<1),t(SIZE<<1),p(SIZE),cr(SIZE),ct(SIZE);
 		str[++n]=0,++str;
 		int m=[&](){
 			int m=*max_element(str,str+n);
@@ -22,18 +23,18 @@ struct SA{
 		}();
 		function<void(int,int,int*,int*,int*)>sais=[&](int n,int m,int* s,int* t,int* p) {
 			int n1=t[n-1]=0,ch=rk[0]=-1,*s1=s+n;
-			auto pushS=[&](int x){ sa[cur[s[x]]--]=x; };
-			auto pushL=[&](int x){ sa[cur[s[x]]++]=x; };
+			auto ps=[&](int x){ sa[cr[s[x]]--]=x; };
+			auto pl=[&](int x){ sa[cr[s[x]]++]=x; };
 			auto IS=[&](int* v){
-				fill_n(&sa[0],n,-1);fill_n(&cnt[0],m,0);
-				for(int i=0;i<n;i++) cnt[s[i]]++;
-				for(int i=1;i<m;i++) cnt[i]+=cnt[i-1];
-				for(int i=0;i<m;i++) cur[i]=cnt[i]-1;
-				for(int i=n1-1;~i;i--) pushS(v[i]);
-				for(int i=1;i<m;i++) cur[i]=cnt[i-1];
-				for(int i=0;i<n;i++) if(sa[i]>0&&t[sa[i]-1]) pushL(sa[i]-1);
-				for(int i=0;i<m;i++) cur[i]=cnt[i]-1;
-				for(int i=n-1;~i;i--) if(sa[i]>0&&!t[sa[i]-1]) pushS(sa[i]-1);
+				fill_n(&sa[0],n,-1);fill_n(&ct[0],m,0);
+				for(int i=0;i<n;i++) ct[s[i]]++;
+				for(int i=1;i<m;i++) ct[i]+=ct[i-1];
+				for(int i=0;i<m;i++) cr[i]=ct[i]-1;
+				for(int i=n1-1;~i;i--) ps(v[i]);
+				for(int i=1;i<m;i++) cr[i]=ct[i-1];
+				for(int i=0;i<n;i++) if(sa[i]>0&&t[sa[i]-1]) pl(sa[i]-1);
+				for(int i=0;i<m;i++) cr[i]=ct[i]-1;
+				for(int i=n-1;~i;i--) if(sa[i]>0&&!t[sa[i]-1]) ps(sa[i]-1);
 			};
 			for(int i=n-2;~i;i--) t[i]=s[i]==s[i+1]?t[i+1]:s[i]>s[i+1];
 			for(int i=1;i<n;i++) rk[i]=t[i-1]&&!t[i]?(p[n1]=i,n1++):-1;
