@@ -16,19 +16,21 @@ struct ACAM{
 	vector<int>val;
 	vector<int>f; // fail ָ指针
 	int tot;
-	inline int trans(char ch){
+	int trans(char ch){
 		return ch-'a'; 
+	}
+	int new_node(){
+		nxt.emplace_back(Node{});
+		val.emplace_back(0);
+		return ++tot;
 	}
 	ACAM():nxt(1),val(1),f(),tot(0){}
 	void insert(const char* s){
 		int p=0;
 		for(int i=1;s[i];++i){
 			auto ch=trans(s[i]);
-			if(!nxt[p][ch]){
-				nxt.emplace_back(Node{});
-				val.emplace_back(0);
-				nxt[p][ch]=++tot;
-			}
+			if(!nxt[p][ch])
+				nxt[p][ch]=new_node();
 			p=nxt[p][ch];
 		}
 		val[p]++;
@@ -99,10 +101,10 @@ struct ACAM{
 	vector<int>cnt;
 	vector<int>end;
 	int tot;
-	inline int trans(char ch){
+	int trans(char ch){
 		return ch-'a'; 
 	}
-	inline int new_node(){
+	int new_node(){
 		nxt.emplace_back(Node{});
 		end.emplace_back(0);
 		return ++tot;
