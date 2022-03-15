@@ -62,6 +62,16 @@ struct SA{
 
 char s[1000010];
 
+int main() {
+	scanf("%s", s+1);
+	int n=strlen(s+1);
+	SA sa(s,n);
+	for (int i=1;i<=n;++i)
+		printf("%d ",sa.sa[i]);
+	puts("");
+	return 0;
+}
+
 // ST for SA and static lcp => lcp(i,j) in O(1)
 struct ST{
 	vector<vector<int>>st;
@@ -83,17 +93,6 @@ struct ST{
 		return min(st[l][s],st[r-(1<<s)+1][s]);
 	}
 };
-
-
-int main() {
-	scanf("%s", s+1);
-	int n=strlen(s+1);
-	SA sa(s,n);
-	for (int i=1;i<=n;++i)
-		printf("%d ",sa.sa[i]);
-	puts("");
-	return 0;
-}
 
 // // O(nlogn) => SA 
 // struct SA {
