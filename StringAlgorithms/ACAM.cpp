@@ -74,3 +74,98 @@ int32_t main() {
 	printf("%d\n",ac.query(str));
 	return 0;
 }
+
+
+
+
+//---------------------------------------
+
+// 找出哪些模式串在文本串中出现的次数最多
+
+#include <bits/stdc++.h>
+using namespace std;
+
+void fo(){ cerr<<endl; } template<class fst,class...lst>
+void fo(fst F, lst... L) { cerr<<F<<" "; fo(L...); }
+#define all(x) x.begin(),x.end()
+using ll=long long;
+
+template<int size=26>
+struct ACAM{
+	using Node=array<int,size>;
+	vector<Node>nxt;
+	vector<int>f;
+	vector<int>cnt;
+	vector<int>end;
+	int tot;
+	inline int trans(char ch){
+		return ch-'a'; 
+	}
+	inline int new_node(){
+		nxt.emplace_back(Node{});
+		end.emplace_back(0);
+		return ++tot;
+	}
+	ACAM():nxt(1),f(),cnt(1),end(1),tot(0){}
+	void insert(const char* s,int idx){
+		int p=0;
+		cnt.emplace_back(0);
+		for(int i=1;s[i];++i){
+			auto ch=trans(s[i]);
+			if(!nxt[p][ch])
+				nxt[p][ch]=new_node();
+			p=nxt[p][ch];
+		}
+		end[p]=idx;
+	}
+	void build(){
+		queue<int>q; f.resize(tot+1);
+		for(int i=0;i<size;++i)
+			if(nxt[0][i])
+				q.push(nxt[0][i]);
+		while(!q.empty()){
+			int u=q.front(); q.pop();
+			for(int i=0;i<size;++i)
+				if(nxt[u][i])
+					f[nxt[u][i]]=nxt[f[u]][i], q.push(nxt[u][i]);
+				else
+					nxt[u][i]=nxt[f[u]][i];
+		}
+	}
+	void query(const char* s){
+		int p=0;
+		for(int i=1;s[i];++i){
+			p=nxt[p][trans(s[i])];
+			for(int u=p;u;u=f[u])
+				if(end[u])
+					cnt[end[u]]++;
+		}
+	}
+};
+
+char t[200][100];
+char str[1000010];
+
+int main(){
+	int n;
+	while(scanf("%d",&n),n){
+		ACAM ac;
+		for(int i=1;i<=n;++i){
+			scanf("%s",t[i]+1);
+			ac.insert(t[i],i);
+		}
+		ac.build();
+		scanf("%s",str+1);
+		ac.query(str);
+		int mx=*max_element(ac.cnt.begin()+1,ac.cnt.end());
+		vector<int>ret;
+		for(int i=1;i<=n;++i)
+			if(mx==ac.cnt[i])
+		 		ret.emplace_back(i);
+		printf("%d\n",mx);
+		for(auto x:ret){
+			puts(t[x]+1);
+		}
+	}
+	return 0; 
+}
