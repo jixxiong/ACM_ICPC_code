@@ -7,14 +7,17 @@ void fo(fst F, lst... L) { cerr<<F<<" "; fo(L...); }
 using ll=long long;
 
 // 最小表示法 => 求最小循环串
+// luogu P1368
 template<typename T>
 int Solution(T* s, int n) {
-	int i=1,ans;
+	int i=1,ans=-1;
+	auto id=[&](int x){ return x>n?x-n:x; };
 	while(i<=n){
 		int j=i,k=i+1;
-		while(k<=n*2&&s[j]<=s[k]) j=s[j]==s[k++]?j+1:i;
+		while(k<=n*2&&s[id(j)]<=s[id(k)]) j=s[id(j)]==s[id(k++)]?j+1:i;
 		while(i<=j) i+=k-j,ans=i<=n?i:ans;
 	}
+	assert(ans!=-1);
 	return ans;
 }
 
@@ -32,8 +35,6 @@ int main() {
 	puts("");
 	return 0;
 }
-
-
 /*
 
 input:
