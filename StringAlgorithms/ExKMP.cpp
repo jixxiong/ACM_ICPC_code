@@ -10,7 +10,7 @@ using ll=long long;
 struct Z:vector<int>{
 	// O(n) 计算 z 函数
 	Z(const char* s,int n):vector<int>(n+1){
-		auto& z=(vector<int>&)*this;
+		auto& z=*this;
 		z[1]=n;
 		for(int i=2,l=0,r=0;i<=n;++i){
 			if(i<=r) z[i]=min(z[i-l+1],r-i+1);

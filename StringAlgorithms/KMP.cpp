@@ -7,20 +7,21 @@ void fo(fst F, lst... L) { cerr<<F<<" "; fo(L...); }
 using ll=long long;
 
 // 求前缀子串的最大 border
-struct PrefixBorder:vector<int>{
+struct Next:vector<int>{
 	// 构建 next 数组 O(n)
-	PrefixBorder(const char* s,int n):vector<int>(n+1){
+	Next(const char* s,int n):vector<int>(n+1){
+		auto&p=*this;
 		for(int i=2,j=0;i<=n;++i){
-			while(j&&s[i]!=s[j+1]) j=operator[](j);
+			while(j&&s[i]!=s[j+1]) j=p[j];
 			if(s[i]==s[j+1]) j++;
-			operator[](i)=j;
+			j=p[j];
 		}
 	}
 };
 
 // 输出匹配的位置 s => 文本串; t => 模式串
 void kmp(const char* s,int n,const char* t,int m){
-	PrefixBorder next(t,m);
+	Next next(t,m);
 	for(int i=1,j=0;i<=n;++i){
 		while(j&&s[i]!=t[j+1]) j=next[j];
 		if(s[i]==t[j+1]) j++;
