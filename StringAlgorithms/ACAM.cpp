@@ -172,3 +172,100 @@ int main(){
 	}
 	return 0; 
 }
+
+
+
+
+
+//----------------------------
+
+#include <bits/stdc++.h>
+using namespace std;
+
+void fo(){ cerr<<endl; } template<class fst,class...lst>
+void fo(fst F, lst... L) { cerr<<F<<" "; fo(L...); }
+#define all(x) x.begin(),x.end()
+using ll=long long;
+
+// luoguP5357
+// Fail树上差分
+template<int size=26>
+struct ACAM{
+	using Node=array<int,size>;
+	vector<Node>nxt;
+	vector<int>val;
+	vector<int>end; // 第i个串的结束点编号
+	vector<int>f;
+	vector<vector<int>>G;
+	int tot;
+	int trans(char ch){
+		return ch-'a'; 
+	}
+	int new_node(){
+		nxt.emplace_back(Node{});
+		val.emplace_back(0);
+		f.emplace_back(0);
+		return ++tot;
+	}
+	ACAM():nxt(1),val(1),end(1),f(1),tot(0){}
+	void insert(const char* s){
+		int p=0;
+		for(int i=1;s[i];++i){
+			auto ch=trans(s[i]);
+			if(!nxt[p][ch])
+				nxt[p][ch]=new_node();
+			p=nxt[p][ch];
+		}
+		end.emplace_back(p);
+	}
+	void build(){
+		queue<int>q;
+		for(int i=0;i<size;++i)
+			if(nxt[0][i])
+				q.push(nxt[0][i]);
+		while(!q.empty()){
+			int u=q.front(); q.pop();
+			for(int i=0;i<size;++i)
+				if(nxt[u][i]){
+					f[nxt[u][i]]=nxt[f[u]][i];
+					q.push(nxt[u][i]);
+				}
+				else
+					nxt[u][i]=nxt[f[u]][i];
+		}
+		G.resize(tot+1);
+		for(int i=1;i<=tot;++i)
+			G[f[i]].emplace_back(i);
+	}
+	void query(const char* s){
+		for(int i=1,p=0;s[i];++i){
+			p=nxt[p][trans(s[i])];
+			val[p]++;
+		}
+		function<void(int)>dfs=[&](int u){
+			for(auto v:G[u]){
+				dfs(v);
+				val[u]+=val[v];
+			}
+		};
+		dfs(0);
+		return ;
+	}
+};
+
+int main(){
+	int n;
+	scanf("%d",&n);
+	vector<char>str(2000010);
+	ACAM ac;
+	for(int i=1;i<=n;++i){
+		scanf("%s",&str[1]);
+		ac.insert(&str[0]);
+	}
+	scanf("%s",&str[1]);
+	ac.build();
+	ac.query(&str[0]);
+	for(int i=1;i<=n;++i)
+		printf("%d\n",ac.val[ac.end[i]]);
+	return 0;
+}
