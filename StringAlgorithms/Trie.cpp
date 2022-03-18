@@ -6,9 +6,9 @@ void fo(fst F, lst... L) { cerr<<F<<" "; fo(L...); }
 #define all(x) x.begin(),x.end()
 using ll=long long;
 
-template<int size=26>
+template<int sigma=26>
 struct Trie{
-	using Node=array<int,size>;
+	using Node=array<int,sigma>;
 	vector<char> end; // 代表该节点是否为一个串的结尾节点
 	vector<Node> nxt;
 	int tot;

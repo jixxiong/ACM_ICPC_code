@@ -9,9 +9,9 @@ using ll=long long;
 // AC自动机
 // 求文本串中出现了多少字典中的单词
 // luoguP3808
-template<int size=26>
+template<int sigma=26>
 struct ACAM{
-	using Node=array<int,size>;
+	using Node=array<int,sigma>;
 	vector<Node>nxt;
 	vector<int>val;
 	vector<int>f; // fail ָ指针
@@ -93,9 +93,9 @@ void fo(fst F, lst... L) { cerr<<F<<" "; fo(L...); }
 #define all(x) x.begin(),x.end()
 using ll=long long;
 
-template<int size=26>
+template<int sigma=26>
 struct ACAM{
-	using Node=array<int,size>;
+	using Node=array<int,sigma>;
 	vector<Node>nxt;
 	vector<int>f;
 	vector<int>cnt;
@@ -189,9 +189,9 @@ using ll=long long;
 
 // luoguP5357
 // Fail树上差分
-template<int size=26>
+template<int sigma=26>
 struct ACAM{
-	using Node=array<int,size>;
+	using Node=array<int,sigma>;
 	vector<Node>nxt;
 	vector<int>val;
 	vector<int>end; // 第i个串的结束点编号
