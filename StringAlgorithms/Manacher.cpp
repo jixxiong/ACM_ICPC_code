@@ -11,7 +11,7 @@ struct Manacher:vector<int>{
 	Manacher(const char* s,int len):vector<int>(2*len+2),max_len(0){
 		vector<int>&p=*this; // p[i] => 以 i 为起点的最大回文半径
 		int n=2*len+1;
-		// 经过处理后字符串变成 "$#1#2#3..."
+		// 经过处理后字符串变成 "$#1#2#3#..."
 		string t="$#";
 		for(int i=1;i<=len;++i)
 			t+=s[i]+string(1,'#');
