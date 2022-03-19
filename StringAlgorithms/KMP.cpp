@@ -21,11 +21,11 @@ struct Next:vector<int>{
 
 // 输出匹配的位置 s => 文本串; t => 模式串
 void kmp(const char* s,int n,const char* t,int m){
-	Next next(t,m);
+	Next nxt(t,m);
 	for(int i=1,j=0;i<=n;++i){
-		while(j&&s[i]!=t[j+1]) j=next[j];
+		while(j&&s[i]!=t[j+1]) j=nxt[j];
 		if(s[i]==t[j+1]) j++;
-		if(j==m) { j=next[j]; printf("%d\n",i-m+1); }
+		if(j==m) { j=nxt[j]; printf("%d\n",i-m+1); }
 	}
 }
 
