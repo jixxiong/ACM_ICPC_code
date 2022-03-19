@@ -63,14 +63,16 @@ void fo(fst F, lst... L) { cerr<<F<<" "; fo(L...); }
 #define pb emplace_back
 using ll=long long;
 
-// luogu p3804 求出 S 的所有出现次数不为 1 的子串的出现次数乘上该子串长度的最大值
+// luogu p3804 
+// 求出 S 的所有出现次数不为 1 的子串的出现次数乘上该子串长度的最大值
 template<int sigma=26>
 struct SAM{
 	using Node=array<int,sigma>;
-	vector<int>len,fa;         // 节点对应的 endpos 等价类的最大子串长度、后缀链接树的父亲指针
+	vector<int>len;            // 节点对应的 endpos 等价类的最大子串长度
+	vector<int>fa;             // 后缀链接树上节点的父亲指针
 	vector<Node>nxt;           // 状态图节点的 nxt 指针
 	vector<int>size;           // 子串的出现次数
-	vector<vector<int>>tree;   // 后缀链接树
+	vector<vector<int>>tree;   // 后缀链接树(邻接表)
 	int las,tot;
 	ll ans;
 	SAM(char* str,int len):len(2),fa(2),nxt(2),size(2),las(1),tot(1),ans(0){ 

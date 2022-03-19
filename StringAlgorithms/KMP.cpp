@@ -14,7 +14,7 @@ struct Next:vector<int>{
 		for(int i=2,j=0;i<=n;++i){
 			while(j&&s[i]!=s[j+1]) j=p[j];
 			if(s[i]==s[j+1]) j++;
-			j=p[j];
+			p[i]=j;
 		}
 	}
 };
