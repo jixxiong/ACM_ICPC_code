@@ -24,7 +24,7 @@ struct ACAM{
 		val.emplace_back(0);
 		return ++tot;
 	}
-	ACAM():nxt(1),val(1),f(),tot(0){}
+	ACAM():nxt(1),val(1),tot(0){}
 	void insert(const char* s){
 		int p=0;
 		for(int i=1;s[i];++i){
