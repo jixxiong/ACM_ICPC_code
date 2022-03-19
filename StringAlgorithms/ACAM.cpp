@@ -1,10 +1,68 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-void fo(){ cerr<<'\n'; } template<class F,class...L> 
-void fo(F fst,L...lst) { cerr<<fst<<' '; fo(lst...); }
-#define all(x) (x).begin(), (x).end()
+#ifndef LOCAL_DEBUG
+__attribute((constructor)) void before_main() { ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0); }
+#endif
+void fo(){ cerr<<endl; } template<class fst,class...lst>
+void fo(fst F, lst... L) { cerr<<F<<" "; fo(L...); }
+#define all(x) x.begin(),x.end()
+#define pb emplace_back
 using ll=long long;
+
+template<int sigma=26>
+struct ACAM{
+	using Node=array<int,sigma>;
+	vector<Node>nxt;
+	vector<char>end;
+	vector<int>f;    // fail ָ指针
+	int tot;
+	int trans(char ch){
+		return ch-'a'; 
+	}
+	int new_node(){
+		nxt.pb(Node{});
+		end.pb(0);
+		return ++tot;
+	}
+	ACAM():nxt(1),end(1),tot(0){}
+	void insert(const char* s){
+		int p=0;
+		for(int i=1;s[i];++i){
+			auto ch=trans(s[i]);
+			if(!nxt[p][ch])
+				nxt[p][ch]=new_node();
+			p=nxt[p][ch];
+		}
+		end[p]=true;
+	}
+	void build(){
+		queue<int>q; f.resize(tot+1);
+		for(int i=0;i<sigma;++i)
+			if(nxt[0][i])
+				q.push(nxt[0][i]);
+		while(!q.empty()){
+			int u=q.front(); q.pop();
+			for(int i=0;i<sigma;++i)
+				if(nxt[u][i])
+					f[nxt[u][i]]=nxt[f[u]][i], q.push(nxt[u][i]);
+				else
+					nxt[u][i]=nxt[f[u]][i];
+		}
+	}
+	// 匹配到多少串
+	int query(const char* s){
+		int p=0,ans=0;
+		for(int i=1;s[i];++i){
+			p=nxt[p][trans(s[i])];
+			for(int u=p;u&&!vis[u];u=f[u])
+				if(end[u]) ans++;
+		}
+		return ans;
+	}
+};
+
+// ---------------------------------
 
 // AC自动机
 // 求文本串中出现了多少字典中的单词
@@ -20,8 +78,8 @@ struct ACAM{
 		return ch-'a'; 
 	}
 	int new_node(){
-		nxt.emplace_back(Node{});
-		val.emplace_back(0);
+		nxt.pb(Node{});
+		val.pb(0);
 		return ++tot;
 	}
 	ACAM():nxt(1),val(1),tot(0){}
@@ -37,12 +95,12 @@ struct ACAM{
 	}
 	void build(){
 		queue<int>q; f.resize(tot+1);
-		for(int i=0;i<size;++i)
+		for(int i=0;i<sigma;++i)
 			if(nxt[0][i])
 				q.push(nxt[0][i]);
 		while(!q.empty()){
 			int u=q.front(); q.pop();
-			for(int i=0;i<size;++i)
+			for(int i=0;i<sigma;++i)
 				if(nxt[u][i])
 					f[nxt[u][i]]=nxt[f[u]][i], q.push(nxt[u][i]);
 				else
@@ -88,9 +146,13 @@ int32_t main() {
 #include <bits/stdc++.h>
 using namespace std;
 
+#ifndef LOCAL_DEBUG
+__attribute((constructor)) void before_main() { ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0); }
+#endif
 void fo(){ cerr<<endl; } template<class fst,class...lst>
 void fo(fst F, lst... L) { cerr<<F<<" "; fo(L...); }
 #define all(x) x.begin(),x.end()
+#define pb emplace_back
 using ll=long long;
 
 template<int sigma=26>
@@ -105,14 +167,14 @@ struct ACAM{
 		return ch-'a'; 
 	}
 	int new_node(){
-		nxt.emplace_back(Node{});
-		end.emplace_back(0);
+		nxt.pb(Node{});
+		end.pb(0);
 		return ++tot;
 	}
 	ACAM():nxt(1),f(),cnt(1),end(1),tot(0){}
 	void insert(const char* s,int idx){
 		int p=0;
-		cnt.emplace_back(0);
+		cnt.pb(0);
 		for(int i=1;s[i];++i){
 			auto ch=trans(s[i]);
 			if(!nxt[p][ch])
@@ -123,12 +185,12 @@ struct ACAM{
 	}
 	void build(){
 		queue<int>q; f.resize(tot+1);
-		for(int i=0;i<size;++i)
+		for(int i=0;i<sigma;++i)
 			if(nxt[0][i])
 				q.push(nxt[0][i]);
 		while(!q.empty()){
 			int u=q.front(); q.pop();
-			for(int i=0;i<size;++i)
+			for(int i=0;i<sigma;++i)
 				if(nxt[u][i])
 					f[nxt[u][i]]=nxt[f[u]][i], q.push(nxt[u][i]);
 				else
@@ -164,7 +226,7 @@ int main(){
 		vector<int>ret;
 		for(int i=1;i<=n;++i)
 			if(mx==ac.cnt[i])
-		 		ret.emplace_back(i);
+		 		ret.pb(i);
 		printf("%d\n",mx);
 		for(auto x:ret){
 			puts(t[x]+1);
@@ -182,9 +244,13 @@ int main(){
 #include <bits/stdc++.h>
 using namespace std;
 
+#ifndef LOCAL_DEBUG
+__attribute((constructor)) void before_main() { ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0); }
+#endif
 void fo(){ cerr<<endl; } template<class fst,class...lst>
 void fo(fst F, lst... L) { cerr<<F<<" "; fo(L...); }
 #define all(x) x.begin(),x.end()
+#define pb emplace_back
 using ll=long long;
 
 // luoguP5357
@@ -202,9 +268,9 @@ struct ACAM{
 		return ch-'a'; 
 	}
 	int new_node(){
-		nxt.emplace_back(Node{});
-		val.emplace_back(0);
-		f.emplace_back(0);
+		nxt.pb(Node{});
+		val.pb(0);
+		f.pb(0);
 		return ++tot;
 	}
 	ACAM():nxt(1),val(1),end(1),f(1),tot(0){}
@@ -216,16 +282,16 @@ struct ACAM{
 				nxt[p][ch]=new_node();
 			p=nxt[p][ch];
 		}
-		end.emplace_back(p);
+		end.pb(p);
 	}
 	void build(){
 		queue<int>q;
-		for(int i=0;i<size;++i)
+		for(int i=0;i<sigma;++i)
 			if(nxt[0][i])
 				q.push(nxt[0][i]);
 		while(!q.empty()){
 			int u=q.front(); q.pop();
-			for(int i=0;i<size;++i)
+			for(int i=0;i<sigma;++i)
 				if(nxt[u][i]){
 					f[nxt[u][i]]=nxt[f[u]][i];
 					q.push(nxt[u][i]);
@@ -235,7 +301,7 @@ struct ACAM{
 		}
 		G.resize(tot+1);
 		for(int i=1;i<=tot;++i)
-			G[f[i]].emplace_back(i);
+			G[f[i]].pb(i);
 	}
 	void query(const char* s){
 		for(int i=1,p=0;s[i];++i){
@@ -268,4 +334,100 @@ int main(){
 	for(int i=1;i<=n;++i)
 		printf("%d\n",ac.val[ac.end[i]]);
 	return 0;
+}
+
+//-------------------
+
+// luogu p3121
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#ifndef LOCAL_DEBUG
+__attribute((constructor)) void before_main() { ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0); }
+#endif
+void fo(){ cerr<<endl; } template<class fst,class...lst>
+void fo(fst F, lst... L) { cerr<<F<<" "; fo(L...); }
+#define all(x) x.begin(),x.end()
+#define pb emplace_back
+using ll=long long;
+
+template<int sigma=26>
+struct ACAM{
+	using Node=array<int,sigma>;
+	vector<Node>nxt;
+	vector<char>end;
+	vector<int>len;
+	vector<int>f;    // fail ָ指针
+	int tot;
+	int trans(char ch){
+		return ch-'a'; 
+	}
+	int new_node(){
+		nxt.pb(Node{});
+		end.pb(0);
+		len.pb(0);
+		return ++tot;
+	}
+	ACAM():nxt(1),end(1),len(1),tot(0){}
+	void insert(const char* s){
+		int p=0,i=1;
+		for(;s[i];++i){
+			auto ch=trans(s[i]);
+			if(!nxt[p][ch])
+				nxt[p][ch]=new_node();
+			p=nxt[p][ch];
+		}
+		end[p]=true;
+		len[p]=i-1;
+	}
+	void build(){
+		queue<int>q; f.resize(tot+1);
+		for(int i=0;i<sigma;++i)
+			if(nxt[0][i])
+				q.push(nxt[0][i]);
+		while(!q.empty()){
+			int u=q.front(); q.pop();
+			for(int i=0;i<sigma;++i)
+				if(nxt[u][i])
+					f[nxt[u][i]]=nxt[f[u]][i], q.push(nxt[u][i]);
+				else
+					nxt[u][i]=nxt[f[u]][i];
+		}
+	}
+	void query(const char* s){
+		int p=0;
+		vector<int>stk{0};
+		vector<int>pst{0};
+		for(int i=1;s[i];++i){
+			stk.emplace_back(i);
+			p=nxt[p][trans(s[i])];
+			pst.emplace_back(p);
+			if(end[p]){
+				for(int i=1;i<=len[p];++i)
+					stk.pop_back(),pst.pop_back();
+				p=pst.back();
+			}
+		}
+		for(int i=1;i<(int)stk.size();++i){
+			cout<<s[stk[i]];
+		}
+		cout<<'\n';
+	}
+};
+
+
+int main(){
+	string s,t;
+	cin>>s;
+	int n;
+	cin>>n;
+	ACAM acam;
+	for(int i=1;i<=n;++i){
+		cin>>t;
+		acam.insert(&t[0]-1);
+	}
+	acam.build();
+	acam.query(&s[0]-1);
+	return 0; 
 }
