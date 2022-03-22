@@ -11,6 +11,6 @@ void fo(fst F, lst... L) { cerr<<F<<" "; fo(L...); }
 using ll=long long;
 
 int main(){
-    
-    return 0; 
+	
+	return 0; 
 }
