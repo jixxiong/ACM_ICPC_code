@@ -8,7 +8,7 @@ void fo(){ cerr<<endl; } template<class fst,class...lst>
 void fo(fst F, lst... L) { cerr<<F<<" "; fo(L...); }
 #define all(x) x.begin(),x.end()
 #define pb emplace_back
-using ll=long long;
+using ll=long long; 
 
 // O(n) => suffix array
 // str[n+1] 为最小字符
