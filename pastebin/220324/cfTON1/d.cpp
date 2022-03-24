@@ -109,7 +109,7 @@ signed main(){
     while(T--){
         ll n; cin>>n;
         auto check=[&](ll k){
-            return 2*n/k-k+1>=0;
+            return 2*n/k-k+1>=1;
         };
         if(n&1){
             cout<<"2\n";
