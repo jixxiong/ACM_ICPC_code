@@ -57,6 +57,7 @@ struct SA{
 			if ((ht[rk[i]]=h)) h--;
 		}
 		for(int i=n-1;i>=1;--i) ++sa[i],rk[i]=rk[i-1];
+		sa.resize(n+1),ht.resize(n+1),rk.resize(n+1);
 	}
 };
 
@@ -72,7 +73,7 @@ int main() {
 	return 0;
 }
 
-// ST for SA and static lcp => lcp(i,j) in O(1)
+// ST for SA and static lcp => lcp(i,j) in O(1)  
 struct ST{
 	vector<vector<int>>st;
 	ST(vector<int>A):st(A.size()){ // height 
@@ -94,7 +95,7 @@ struct ST{
 	}
 };
 
-// // O(nlogn) => SA 
+// // O(nlogn) => SA not good
 // struct SA {
 // 	vector<int>sa,rk,ht;
 // 	template<typename T>
@@ -102,7 +103,7 @@ struct ST{
 // 		int m=*max_element(s+1,s+1+n);
 // 		vector<int>tp(n+1),buk(n+1);
 // 		for(int i=1;i<=n;++i) rk[i]=s[i],tp[i]=i;
-// 		auto radix_sort=[&](int m){
+// 		auto radix_sort=[&](int m){  
 // 			fill_n(buk.begin(),m+1,0);
 // 			for(int i=1;i<=n;++i) buk[rk[i]]++;
 // 			for(int i=1;i<=m;++i) buk[i]+=buk[i-1];
