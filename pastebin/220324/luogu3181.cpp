@@ -2,7 +2,7 @@
 using namespace std;
 
 #ifndef LOCAL_COMPILE
-int IOS=[](){return ios_base::sync_with_stdio(0),cin.tie(0),cout.tie(0),0;}();
+__attribute((constructor)) void IOS(){ ios_base::sync_with_stdio(0),cin.tie(0),cout.tie(0); };
 #endif
 void fo(){ cerr<<'\n'; } template<class F,class...L> 
 void fo(F fst,L...lst) { cerr<<fst<<' '; fo(lst...); }
@@ -65,6 +65,7 @@ struct SA{
 			if ((ht[rk[i]]=h)) h--;
 		}
 		for(int i=n-1;i>=1;--i) ++sa[i],rk[i]=rk[i-1];
+		
 	}
 };
 
