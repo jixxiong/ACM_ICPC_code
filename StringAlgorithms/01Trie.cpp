@@ -25,24 +25,43 @@ struct Trie{
 			p=nxt[p][ch];
 		}
 	}
-	bool query(int x){
+	int query_xor_max(int x){
 		int p=0;
+		int ret=0;
 		for(int i=int_len;i>=0;--i){
 			auto ch=(x>>i)&1;
-			if(!nxt[p][ch])
-				return false;
-			p=nxt[p][ch];
+			if(nxt[p][!ch]){
+				p=nxt[p][!ch];
+				ret|=1<<i;
+			}else{
+				p=nxt[p][ch];
+			}
 		}
-		return true;
+		return ret;
+	}
+	int query_xor_min(int x){
+		int p=0;
+		int ret=0;
+		for(int i=int_len;i>=0;--i){
+			auto ch=(x>>i)&1;
+			if(nxt[p][ch]){
+				p=nxt[p][ch];
+			}else{
+				p=nxt[p][!ch];
+				ret|=1<<i;
+			}
+		}
+		return ret;
 	}
 };
 
 int main(){
 	Trie trie;
-	trie.insert(123);
-	trie.insert(234);
-	puts(trie.query(124)?"Yes":"No");
-	puts(trie.query(123)?"Yes":"No");
-	puts(trie.query(234)?"Yes":"No");
+	trie.insert(0);
+	trie.insert(1);
+	trie.insert(2);
+	trie.insert(3);
+	cout<<trie.query_xor_max(2)<<endl;
+	cout<<trie.query_xor_min(2)<<endl;
 	return 0; 
 }
