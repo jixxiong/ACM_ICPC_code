@@ -10,6 +10,17 @@ void fk(fst F, lst... L) { std::cerr<<F<<' '; fk(L...); }
 using ll=long long;
 
 int main(){
-    std::cout<<"HELLO"<<std::endl;
+    int T; std::cin>>T;
+    while(T--){
+        int n; std::cin>>n;
+        std::vector<int>v(n);
+        for(auto& x:v) std::cin>>x;
+        sort(all(v));
+        if(n==1) {
+            std::cout<<(v[0]==1?"YES":"NO")<<'\n';
+            continue;
+        }
+        std::cout<<(v.back()<=*std::next(v.rbegin())+1?"YES":"NO")<<'\n';
+    }
     return 0; 
 }

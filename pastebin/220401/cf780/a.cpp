@@ -10,6 +10,14 @@ void fk(fst F, lst... L) { std::cerr<<F<<' '; fk(L...); }
 using ll=long long;
 
 int main(){
-    std::cout<<"HELLO"<<std::endl;
+    int T; std::cin>>T;
+    while(T--){
+        int a,b; std::cin>>a>>b;
+        if(a==0) {
+            std::cout<<"1"<<'\n';
+            continue;
+        }
+        std::cout<<1+std::max((a+2*b)/2*2,((a-1)/2+b)*2+1)<<'\n';
+    }
     return 0; 
 }

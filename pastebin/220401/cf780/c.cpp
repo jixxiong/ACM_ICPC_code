@@ -10,6 +10,6 @@ void fk(fst F, lst... L) { std::cerr<<F<<' '; fk(L...); }
 using ll=long long;
 
 int main(){
-    std::cout<<"HELLO"<<std::endl;
-    return 0; 
+    
+    return 0;
 }
