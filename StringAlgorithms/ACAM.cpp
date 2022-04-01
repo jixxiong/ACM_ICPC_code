@@ -9,34 +9,35 @@ void fo(fst F, lst... L) { std::cerr<<F<<' '; fo(L...); }
 #define pb emplace_back
 using ll=long long;
 
-template<int sigma=26>
+template<const int sigma=26>
 struct ACAM{
 	using Node=std::array<int,sigma>;
 	std::vector<Node>nxt;
-	std::vector<char>end;
-	std::vector<int>f;    // fail ָ指针
+	std::vector<int>fail;    // fail ָ指针
+	std::vector<int>occ;     // 字符串信息
+	std::vector<int>endpos;  // 字符串结束位置
 	int tot;
 	int trans(char ch){
 		return ch-'a'; 
 	}
 	int new_node(){
 		nxt.pb(Node{});
-		end.pb(0);
+		occ.pb(0);
 		return ++tot;
 	}
-	ACAM():nxt(1),end(1),tot(0){}
-	void insert(const char* s){
+	ACAM():nxt(1),occ(1),endpos(1),tot(0){}
+	void insert(const char* s,int n){
 		int p=0;
-		for(int i=1;s[i];++i){
+		for(int i=1;i<=n;++i){
 			auto ch=trans(s[i]);
-			if(!nxt[p][ch])
-				nxt[p][ch]=new_node();
+			if(!nxt[p][ch]) nxt[p][ch]=new_node();
 			p=nxt[p][ch];
 		}
-		end[p]=true;
+		endpos.pb(p);
+		occ[p]++;
 	}
 	void build(){
-		std::queue<int>q; f.resize(tot+1);
+		std::queue<int>q; fail.resize(tot+1);
 		for(int i=0;i<sigma;++i)
 			if(nxt[0][i])
 				q.push(nxt[0][i]);
@@ -44,20 +45,10 @@ struct ACAM{
 			int u=q.front(); q.pop();
 			for(int i=0;i<sigma;++i)
 				if(nxt[u][i])
-					f[nxt[u][i]]=nxt[f[u]][i], q.push(nxt[u][i]);
+					fail[nxt[u][i]]=nxt[fail[u]][i], q.push(nxt[u][i]);
 				else
-					nxt[u][i]=nxt[f[u]][i];
+					nxt[u][i]=nxt[fail[u]][i];
 		}
-	}
-	// 匹配到多少串
-	int query(const char* s){
-		int p=0,ans=0;
-		for(int i=1;s[i];++i){
-			p=nxt[p][trans(s[i])];
-			for(int u=p;u;u=f[u])
-				if(end[u]) ans++;
-		}
-		return ans;
 	}
 };
 
