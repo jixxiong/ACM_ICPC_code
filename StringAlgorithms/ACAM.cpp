@@ -54,9 +54,14 @@ struct ACAM{
 		int p=0,ans=0;
 		for(int i=1;s[i];++i){
 			p=nxt[p][trans(s[i])];
-			for(int u=p;u&&!vis[u];u=f[u])
+			for(int u=p;u;u=f[u])
 				if(end[u]) ans++;
 		}
 		return ans;
 	}
 };
+
+int main(){
+
+	return 0;
+}
