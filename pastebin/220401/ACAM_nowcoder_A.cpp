@@ -3,13 +3,13 @@
 #ifndef LOCAL_DEBUG
 __attribute((constructor)) void before_main() { std::ios_base::sync_with_stdio(false);std::cin.tie(0);std::cout.tie(0); }
 #endif
-void fo(){ std::cerr<<'\n'; } template<class fst,class...lst>
-void fo(fst F, lst... L) { std::cerr<<F<<' '; fo(L...); }
+void fk(){ std::cerr<<'\n'; } template<class fst,class...lst>
+void fk(fst F, lst... L) { std::cerr<<F<<' '; fk(L...); }
 #define all(x) x.begin(),x.end()
 #define pb emplace_back
 using ll=long long;
-template<const int sigma=26>
 
+template<const int sigma=26>
 struct ACAM{
     using Node=std::array<int,sigma>;
     std::vector<Node>nxt;
@@ -54,8 +54,36 @@ struct ACAM{
     }
 };
 
+struct Solution:ACAM<26>{
+    Solution():ACAM(){
+        int n; std::cin>>n;
+        for(int i=1;i<=n;++i){
+            std::string s; std::cin>>s;
+            insert(&s[0]-1,s.length());
+        }
+        build();
+        std::vector<std::vector<int>>G(tot+1);
+        for(int i=1;i<=tot;++i) G[fail[i]].pb(i);
+        std::string s; std::cin>>s;
+        std::vector<int>res(tot+1);
+        for(int i=1,m=s.length(),p=0;i<=m;++i){
+            p=nxt[p][trans(s[i-1])];
+            res[p]++;
+        }
+        std::function<void(int)>dfs=[&](int u){
+            for(auto v:G[u]){
+                dfs(v);
+                res[u]+=res[v];
+            }
+        };
+        dfs(0);
+        for(int i=1;i<=n;++i){
+            std::cout<<res[pos[i]]<<'\n';
+        }
+    }
+};
 
 int main(){
-
-	return 0;
+    Solution();
+    return 0; 
 }
