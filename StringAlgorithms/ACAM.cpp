@@ -8,8 +8,8 @@ void fo(fst F, lst... L) { std::cerr<<F<<' '; fo(L...); }
 #define all(x) x.begin(),x.end()
 #define pb emplace_back
 using ll=long long;
-template<const int sigma=26>
 
+template<const int sigma=26>
 struct ACAM{
     using Node=std::array<int,sigma>;
     std::vector<Node>nxt;
