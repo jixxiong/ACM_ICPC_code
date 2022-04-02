@@ -3,8 +3,8 @@
 #ifndef LOCAL_DEBUG
 __attribute((constructor)) void before_main() { std::ios_base::sync_with_stdio(false);std::cin.tie(0);std::cout.tie(0); }
 #endif
-void fo(){ std::cerr<<'\n'; } template<class fst,class...lst>
-void fo(fst F, lst... L) { std::cerr<<F<<' '; fo(L...); }
+void fk(){ std::cerr<<'\n'; } template<class fst,class...lst>
+void fk(fst F, lst... L) { std::cerr<<F<<' '; fk(L...); }
 #define all(x) x.begin(),x.end()
 #define pb emplace_back
 using ll=long long;
@@ -53,7 +53,36 @@ struct ACAM{
     }
 };
 
-int main(){
+struct Solution:ACAM<26>{
+    Solution():ACAM<26>(){
+        int n,m; std::cin>>n>>m;
+        for(int i=1;i<=n;++i){
+            std::string s; std::cin>>s;
+            insert(&s[0]-1,s.length());
+        }
+        build();
+        std::vector<std::vector<int>>dp(m+1,std::vector<int>(tot+1));
+        dp[0][0]=1;
+        for(int i=1;i<=m;++i){
+            for(int j=0;j<=tot;++j){
+                for(int c=0;c<26;++c){
+                    if(!end[nxt[j][c]]){
+                        dp[i][nxt[j][c]]=(dp[i][nxt[j][c]]+dp[i-1][j])%10007;
+                    }
+                }
+            }
+        }
+        int res=1;
+        for(int i=1;i<=m;++i)
+            res=(res*26)%10007;
+        for(int i=0;i<=tot;++i){
+            if(!end[i]) res=(10007+res-dp[m][i])%10007;
+        }
+        std::cout<<res<<std::endl;
+    }
+};
 
-	return 0;
+int main(){
+    Solution();
+    return 0;
 }
