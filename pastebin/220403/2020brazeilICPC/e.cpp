@@ -26,7 +26,7 @@ struct Fenwick{
 int main(){
     int n,m; std::cin>>n>>m;
     std::vector<int>A(n+1);
-	A[0]=0x3f3f3f3f;
+    A[0]=0x3f3f3f3f;
     std::vector<std::pair<int,int>>B(n+1);
     std::vector<std::vector<int>>G(n+1);
     for(int i=1,fa;i<=n;++i) {
@@ -67,7 +67,7 @@ int main(){
         int h=qry[i][1];
         while(idx<=n&&B[idx].first>=h){
             tic[B[idx].second]=i;
-			idx++;
+            idx++;
         }
         fk[qry[i][0]].pb(i);
     }
@@ -79,7 +79,7 @@ int main(){
         for(auto v:G[u]){
             dfs1(v);
         }
-		for(auto x:fk[u]) bit.add(x,-1);
+        for(auto x:fk[u]) bit.add(x,-1);
     };
     dfs1(1);
     for(int i=1;i<=n;++i)
