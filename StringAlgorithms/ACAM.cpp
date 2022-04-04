@@ -44,11 +44,16 @@ struct ACAM{
                 q.push(nxt[0][i]);
         while(!q.empty()){
             int u=q.front(); q.pop();
-            for(int i=0;i<sigma;++i)
-                if(nxt[u][i])
-                    fail[nxt[u][i]]=nxt[fail[u]][i], end[nxt[u][i]]|=end[fail[nxt[u][i]]], q.push(nxt[u][i]);
-                else
+            for(int i=0;i<sigma;++i){
+                if(nxt[u][i]){
+                    fail[nxt[u][i]]=nxt[fail[u]][i];
+                    end[nxt[u][i]]|=end[fail[nxt[u][i]]];
+                    q.push(nxt[u][i]);
+                }
+                else{
                     nxt[u][i]=nxt[fail[u]][i];
+                }
+            }
         }
     }
 };
