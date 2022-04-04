@@ -67,7 +67,9 @@ struct Solution:ACAM<26>{
             for(int j=0;j<=tot;++j){
                 for(int c=0;c<26;++c){
                     if(!end[nxt[j][c]]){
-                        dp[i][nxt[j][c]]=(dp[i][nxt[j][c]]+dp[i-1][j])%10007;
+                        auto& val=dp[i][nxt[j][c]];
+                        val=(val+dp[i-1][j]);
+                        if(val>10007) val-=10007;
                     }
                 }
             }
@@ -76,7 +78,11 @@ struct Solution:ACAM<26>{
         for(int i=1;i<=m;++i)
             res=(res*26)%10007;
         for(int i=0;i<=tot;++i){
-            if(!end[i]) res=(10007+res-dp[m][i])%10007;
+            if(!end[i]) {
+                res=res-dp[m][i];
+                if(res<0)
+                    res+=10007;
+            }
         }
         std::cout<<res<<std::endl;
     }

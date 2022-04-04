@@ -19,7 +19,7 @@ struct ACAM{
     std::vector<std::vector<int>>idx;     // idx[p]=>串p的编号为idx[i]
     int tot,cnt;
     int trans(char ch){
-        return ch-'A'; 
+        return ch-'0'; 
     }
     int new_node(){
         nxt.resize(++tot+1);
@@ -58,7 +58,7 @@ struct ACAM{
     }
 };
 
-struct Solution:ACAM<26>{
+struct Solution:ACAM<2>{
     Solution():ACAM(){
         int n; std::cin>>n;
         for(int i=1;i<=n;++i){
@@ -68,29 +68,28 @@ struct Solution:ACAM<26>{
         build();
         std::vector<std::vector<int>>G(tot+1);
         for(int i=0;i<=tot;++i){
-            for(int j=0;j<26;++j){
+            for(int j=0;j<2;++j){
                 G[i].pb(nxt[i][j]);
             }
-            if(i) G[i].pb(fail[i]);
         }
         std::vector<char>vis(tot+1),stk(tot+1);
         bool succ=false;
         std::function<void(int)> dfs=[&](int u){
             if(succ) return ;
-            stk[u]=true;
             for(auto v:G[u]){
                 if(end[v]) continue;
-                if(vis[v]) continue;
-                if(stk[u]){
+                if(stk[v]){
                     succ=true;
                     return ;
                 }
+                if(vis[v]) continue;
                 vis[v]=true;
+                stk[v]=true;
                 dfs(v);
                 stk[v]=false;
             }
         };
-        vis[0]=true;
+        vis[0]=true; stk[0]=true;
         dfs(0);
         std::cout<<(succ?"TAK":"NIE")<<std::endl;
     }
