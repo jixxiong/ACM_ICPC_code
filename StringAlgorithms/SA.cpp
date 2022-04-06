@@ -4,28 +4,28 @@ using namespace std;
 // O(n) => suffix array
 // str[n+1] 为最小字符
 // 若对整数数组求SA应当先进行离散化
-template<typename T,int sigma=300>
+template<typename T=char,int sigma=300>
 struct SA{
-	vector<int>sa,rk,ht;
+	std::vector<int>sa,rk,ht;
 	SA(T* str,int n){
-		const int SIZE=max(sigma,n)+2;
+		const int SIZE=std::max(sigma,n)+2;
 		sa.resize(SIZE),rk.resize(SIZE),ht.resize(SIZE);
-		vector<int>s(SIZE<<1),t(SIZE<<1),p(SIZE),cr(SIZE),ct(SIZE);
+		std::vector<int>s(SIZE<<1),t(SIZE<<1),p(SIZE),cr(SIZE),ct(SIZE);
 		str[++n]=0,++str;
 		int m=[&](){
-			int m=*max_element(str,str+n);
-			fill_n(&rk[0],m+1,0);
+			int m=*std::max_element(str,str+n);
+			std::fill_n(&rk[0],m+1,0);
 			for (int i=0;i<n;i++) rk[(int)str[i]]=1;
 			for (int i=0;i<m;i++) rk[i+1]+=rk[i];
 			for (int i=0;i<n;i++) s[i]=rk[(int)str[i]]-1;
 			return rk[m];
 		}();
-		function<void(int,int,int*,int*,int*)>sais=[&](int n,int m,int* s,int* t,int* p) {
+		std::function<void(int,int,int*,int*,int*)>sais=[&](int n,int m,int* s,int* t,int* p) {
 			int n1=t[n-1]=0,ch=rk[0]=-1,*s1=s+n;
 			auto ps=[&](int x){ sa[cr[s[x]]--]=x; };
 			auto pl=[&](int x){ sa[cr[s[x]]++]=x; };
 			auto IS=[&](int* v){
-				fill_n(&sa[0],n,-1);fill_n(&ct[0],m,0);
+				std::fill_n(&sa[0],n,-1); std::fill_n(&ct[0],m,0);
 				for(int i=0;i<n;i++) ct[s[i]]++;
 				for(int i=1;i<m;i++) ct[i]+=ct[i-1];
 				for(int i=0;i<m;i++) cr[i]=ct[i]-1;
@@ -66,7 +66,7 @@ char s[1000010];
 int main() {
 	scanf("%s", s+1);
 	int n=strlen(s+1);
-	SA sa(s,n);
+	SA<char> sa(s,n);
 	for (int i=1;i<=n;++i)
 		printf("%d ",sa.sa[i]);
 	puts("");
