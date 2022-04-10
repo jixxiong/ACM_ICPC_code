@@ -57,20 +57,27 @@ int main(){
         for(int i=0;i<n;++i){
             if(i==h) continue;
             auto [flg,pnt]=intersect(A[i],A[h],s,t);
-            if(flg){
-                B.push_back(pnt);
-            }
+            if(flg) B.push_back(pnt);
         }
         if((int)B.size()<k){
             std::cout<<"-1\n";
             continue;
         }
         std::nth_element(B.begin(),B.begin()+k-1,B.end(),[&](const point&o1,const point&o2){
-            if(s.x!=t.x) return cmp(s.x,t.x)<0?cmp(o1.x,o2.x)<0:cmp(o1.x,o2.x)>0;
+            if(cmp(s.x,t.x)!=0) return cmp(s.x,t.x)<0?cmp(o1.x,o2.x)<0:cmp(o1.x,o2.x)>0;
             return cmp(s.y,t.y)<0?cmp(o1.y,o2.y)<0:cmp(o1.y,o2.y)>0;
         });
-        auto [x,y]=*(B.begin()+k-1);
-        std::cout<<std::fixed<<std::setprecision(7)<<x<<' '<<y<<'\n';
+        auto [x1,y1]=B[k-1];
+        if((int)B.size()==k) std::cout<<std::fixed<<std::setprecision(7)<<x1<<' '<<y1<<'\n';
+        else{
+            std::nth_element(B.begin(),B.begin()+k,B.end(),[&](const point&o1,const point&o2){
+                if(cmp(s.x,t.x)!=0) return cmp(s.x,t.x)<0?cmp(o1.x,o2.x)<0:cmp(o1.x,o2.x)>0;
+                return cmp(s.y,t.y)<0?cmp(o1.y,o2.y)<0:cmp(o1.y,o2.y)>0;
+            });
+            auto x2=B[k].x;
+            if(cmp(x1,x2)==0) std::cout<<"-1\n";
+            else std::cout<<std::fixed<<std::setprecision(7)<<x1<<' '<<y1<<'\n';
+        }
     }
     return 0;
 }
