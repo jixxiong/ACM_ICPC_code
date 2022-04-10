@@ -11,24 +11,21 @@ using ll=long long;
 
 struct point{
     ll x,y;
+    int getQuad()const {
+        if(x>0&&y>=0) return 1;
+        if(x<=0&&y>0) return 2;
+        if(x<0&&y<=0) return 3;
+        if(x>=0&&y<0) return 4;
+        assert(false);
+    }
+    friend ll crs(const point&o1,const point&o2){
+        return o1.x*o2.y-o2.x*o1.y;
+    }
 };
 
-ll crs(const point&o1,const point&o2){
-    return o1.x*o2.y-o2.x*o1.y;
-}
-
-int Quadrant(point a){
-    if(a.x>0&&a.y>=0)  return 1;
-    if(a.x<=0&&a.y>0)  return 2;
-    if(a.x<0&&a.y<=0)  return 3;
-    if(a.x>=0&&a.y<0)  return 4;
-    assert(false);
-}
-
-bool cmp3(point a,point b){
-    if(Quadrant(a)==Quadrant(b))
-        return crs(a,b)>0;
-    else return Quadrant(a)<Quadrant(b);
+bool cmp(const point& o1,const point& o2){
+    if(o1.getQuad()==o2.getQuad()) return crs(o1,o2)>0;
+    else return o1.getQuad()<o2.getQuad();
 }
 
 int main(){
@@ -39,7 +36,7 @@ int main(){
         for(int i=0;i<n;++i){
             std::cin>>A[i].x>>A[i].y;
         }
-        std::sort(all(A),cmp3);
+        std::sort(all(A),cmp);
         int ans=n;
         for(int i=0,j=0;i<n;++i){
             while(j<=i)j++;

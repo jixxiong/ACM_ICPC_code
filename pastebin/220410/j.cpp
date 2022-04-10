@@ -24,7 +24,7 @@ struct point{
     ld dot(point p){
         return x*p.x+y*p.y;
     }
-    ld det(point p){
+    ld crs(point p){
         return x*p.y-y*p.x;
     }
 };
@@ -35,13 +35,17 @@ int cmp(ld x,ld y){
 }
 
 bool on_seg(point A,point B,point C){ // C in AB
-    return cmp((A-C).det(B-C),0)==0&&cmp((A-C).dot(B-C),0)<=0;
+    return cmp((A-C).crs(B-C),0)==0&&cmp((A-C).dot(B-C),0)<=0;
 }
 
-std::pair<bool,point> intersect(point A, point B, point C, point D){
-    point ret=A+(B-A)*(((D-C).det(C-A))/((D-C).det(B-A)));
-    return {on_seg(C,D,ret),ret};
+point intersect(point A, point B, point C, point D){
+    return A+(B-A)*(((D-C).crs(C-A))/((D-C).crs(B-A)));
 }
+
+// point intersect(point A,point B,point C,point D){
+//     ld A1=B.y-A.y,B1=A.x-B.x,C1=A1*A.x+B1*A.y,A2=D.y-C.y,B2=C.x-D.x,C2=A2*C.x+B2*C.y,r=A1*B2-A2*B1;
+//     return {(B2*C1-B1*C2)/r,(A1*C2-A2*C1)/r};
+// }
 
 int main(){
     int n,m; std::cin>>n>>m;
@@ -51,33 +55,27 @@ int main(){
     for(int i=0;i<n;++i){
         std::cin>>A[i].x>>A[i].y;
     }
-    while(m--){
-        int h,k; std::cin>>h>>k; h--;
-        std::vector<point>B; B.reserve(n-1);
-        for(int i=0;i<n;++i){
-            if(i==h) continue;
-            auto [flg,pnt]=intersect(A[i],A[h],s,t);
-            if(flg) B.push_back(pnt);
+    std::vector<std::vector<point>>B(n);
+    for(int i=0;i<n;++i){
+        for(int j=i+1;j<n;++j){
+            if(cmp((t-s).crs(A[j]-A[i]),0)==0) continue;
+            if(cmp((A[j]-A[i]).crs(s-A[i])*(A[j]-A[i]).crs(t-A[i]),0)>=0) continue;
+            auto pnt=intersect(A[i],A[j],s,t);
+            assert(pnt.x>=-1e6-1&&pnt.x<=1e6+1);
+            assert(pnt.y>=-1e6-1&&pnt.y<=1e6+1);
+            B[i].pb(pnt),B[j].pb(pnt);
         }
-        if((int)B.size()<k){
-            std::cout<<"-1\n";
-            continue;
-        }
-        std::nth_element(B.begin(),B.begin()+k-1,B.end(),[&](const point&o1,const point&o2){
+    }
+    for(int i=0;i<n;++i) {
+        sort(all(B[i]),[&](const point&o1,const point&o2){
             if(cmp(s.x,t.x)!=0) return cmp(s.x,t.x)<0?cmp(o1.x,o2.x)<0:cmp(o1.x,o2.x)>0;
             return cmp(s.y,t.y)<0?cmp(o1.y,o2.y)<0:cmp(o1.y,o2.y)>0;
         });
-        auto [x1,y1]=B[k-1];
-        if((int)B.size()==k) std::cout<<std::fixed<<std::setprecision(7)<<x1<<' '<<y1<<'\n';
-        else{
-            std::nth_element(B.begin(),B.begin()+k,B.end(),[&](const point&o1,const point&o2){
-                if(cmp(s.x,t.x)!=0) return cmp(s.x,t.x)<0?cmp(o1.x,o2.x)<0:cmp(o1.x,o2.x)>0;
-                return cmp(s.y,t.y)<0?cmp(o1.y,o2.y)<0:cmp(o1.y,o2.y)>0;
-            });
-            auto x2=B[k].x;
-            if(cmp(x1,x2)==0) std::cout<<"-1\n";
-            else std::cout<<std::fixed<<std::setprecision(7)<<x1<<' '<<y1<<'\n';
-        }
+    }
+    while(m--){
+        int h,k; std::cin>>h>>k; h--;
+        if(k>(int)B[h].size()) std::cout<<"-1\n";
+        else std::cout<<std::fixed<<std::setprecision(8)<<B[h][k-1].x<<" "<<B[h][k-1].y<<'\n';
     }
     return 0;
 }
