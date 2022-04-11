@@ -10,13 +10,13 @@ void fk(fst F, lst... L) { std::cerr<<F<<' '; fk(L...); }
 using ll=long long;
 
 struct my_hash{
-    const static ll m1=998244353,m2=1000000007,m3=10000253;
-    const static ll a1=10000253,a2=998244353,a3=1000000007;
-    const static ll b1=1000000007,b2=10000253,b3=998244353;
-    size_t operator()(ll x)const{
-        return x=(a1*x+b1)%m1;
-        // return x=(a2*x+b2)%m2;
-        // return (a3*x+b3)%m3;
+    size_t operator()(size_t x)const{
+        static const size_t random_shift=std::chrono::steady_clock::now().time_since_epoch().count();
+        x+=random_shift;
+        x+=0x9e3779b97f4a7c15;
+        x=(x^(x>>30))*0xbf58476d1ce4e5b9;
+        x=(x^(x>>27))*0x94d049bb133111eb;
+        return x^(x>>31);
     }
 };
 
@@ -33,6 +33,7 @@ ll BSGS(ll a,ll b,ll m){
     a%=m,b%=m;
     if(b==1) return 0;
     static std::unordered_map<ll,ll,my_hash>hs;
+    hs.clear();
     ll t=(ll)sqrt(m)+1;
     for(int i=0,cur=b;i<t;++i) hs[cur]=i,cur=cur*a%m;
     ll stp=qpow(a,t,m);
