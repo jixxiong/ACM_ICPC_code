@@ -45,7 +45,7 @@ ll BSGS(ll a,ll b,ll m){
     return -1;
 }
 
-int main(){
+int main(){ // hdu6959
     const int p=998244353;
     int T; std::cin>>T;
     while(T--){
