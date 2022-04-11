@@ -28,23 +28,21 @@ ll qpow(ll x,ll y,ll m){
     return ret;
 }
 
-struct{
-    // given a,b,m, find the minium x s.t. a^x=b(mod m)
-    ll operator()(ll a,ll b,ll m){
-        a%=m,b%=m;
-        if(b==1) return 0;
-        std::unordered_map<ll,ll,my_hash>hs;
-        ll t=(ll)sqrt(m)+1;
-        for(int i=0,cur=b;i<t;++i) hs[cur]=i,cur=cur*a%m;
-        ll stp=qpow(a,t,m);
-        for(ll A=1,cur=stp;A<=t;++A) {
-            auto it=hs.find(cur);
-            if(it!=hs.end()) return A*t-it->second;
-            cur=cur*stp%m;
-        }
-        return -1;
+// given a,b,m, find the minium x s.t. a^x=b(mod m)
+ll BSGS(ll a,ll b,ll m){
+    a%=m,b%=m;
+    if(b==1) return 0;
+    static std::unordered_map<ll,ll,my_hash>hs;
+    ll t=(ll)sqrt(m)+1;
+    for(int i=0,cur=b;i<t;++i) hs[cur]=i,cur=cur*a%m;
+    ll stp=qpow(a,t,m);
+    for(ll A=1,cur=stp;A<=t;++A) {
+        auto it=hs.find(cur);
+        if(it!=hs.end()) return A*t-it->second;
+        cur=cur*stp%m;
     }
-}BSGS;
+    return -1;
+}
 
 int main(){
     const int p=998244353;
