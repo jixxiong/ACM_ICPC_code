@@ -28,7 +28,7 @@ ll qpow(ll x,ll y,ll m){
     return ret;
 }
 
-// given a,b,m, find the minium x s.t. a^x=b(mod m)
+// given a,b,m, where gcd(a,m)=1, find the minium x s.t. a^x=b(mod m)
 ll BSGS(ll a,ll b,ll m){
     a%=m,b%=m;
     if(b==1) return 0;
