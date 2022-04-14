@@ -14,12 +14,12 @@ struct wGraph:public vector<vector<wEdge>>{
 };
 
 // SPFA算法 O(k*m)
-struct SSSP{
+struct SPFA{
 	static constexpr long long INF=0x3f3f3f3f3f3f3f3f;
 	vector<long long>dis; vector<char> vis;
 	vector<int>cnt; vector<int>pre;
 	bool neg;
-	SSSP(wGraph&G,int s):dis(G.n+1,INF),vis(G.n+1),cnt(G.n+1),pre(G.n+1),neg(0){
+	SPFA(wGraph&G,int s):dis(G.n+1,INF),vis(G.n+1),cnt(G.n+1),pre(G.n+1),neg(0){
 		queue<int>q;
 		dis[s]=0;
 		for(int i=1;i<=G.n;++i){
