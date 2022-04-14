@@ -7,24 +7,24 @@ void fo(fst F, lst... L) { cerr<<F<<" "; fo(L...); }
 using ll=long long;
 
 struct DSU:vector<int>{
-	vector<int>&arr;
-	DSU(int n):vector<int>(n),arr(*this){
-		for(int i=0;i<n;++i)
-			arr[i]=i;
-	}
-	int find(int x){
-		return arr[x]==x?x:(arr[x]=find(arr[x]));
-	}
-	void merge(int x,int y){
-		int fx=find(x),fy=find(y);
-		if(fx!=fy)
-			arr[fx]=fy;
-	}
-	void clear(int n){
-		if((int)size()<n) resize(n);
-		for(int i=0;i<n;++i)
-			arr[i]=i;
-	}
+    vector<int>&arr;
+    DSU(int n):vector<int>(n),arr(*this){
+        for(int i=0;i<n;++i)
+            arr[i]=i;
+    }
+    int find(int x){
+        return arr[x]==x?x:(arr[x]=find(arr[x]));
+    }
+    void merge(int x,int y){
+        int fx=find(x),fy=find(y);
+        if(fx!=fy)
+            arr[fx]=fy;
+    }
+    void clear(int n){
+        if((int)size()<n) resize(n);
+        for(int i=0;i<n;++i)
+            arr[i]=i;
+    }
 };
 
 int main(){

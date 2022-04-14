@@ -10,30 +10,30 @@ using ll=long long;
 // luogu P1368
 template<typename T>
 int Solution(T* s, int n) {
-	int i=1,ans=-1;
-	auto id=[&](int x){ return x>n?x-n:x; };
-	while(i<=n){
-		int j=i,k=i+1;
-		while(k<=n*2&&s[id(j)]<=s[id(k)]) j=s[id(j)]==s[id(k++)]?j+1:i;
-		while(i<=j) i+=k-j,ans=i<=n?i:ans;
-	}
-	assert(ans!=-1);
-	return ans;
+    int i=1,ans=-1;
+    auto id=[&](int x){ return x>n?x-n:x; };
+    while(i<=n){
+        int j=i,k=i+1;
+        while(k<=n*2&&s[id(j)]<=s[id(k)]) j=s[id(j)]==s[id(k++)]?j+1:i;
+        while(i<=j) i+=k-j,ans=i<=n?i:ans;
+    }
+    assert(ans!=-1);
+    return ans;
 }
 
 int main() {
-	int n;
-	scanf("%d", &n);
-	vector<int>A(n+1);
-	for(int i=1;i<=n;++i) 
-		scanf("%d",&A[i]);
-	int p=Solution(&A[0],n);
-	for(int i=p;i<=n;++i) 
-		printf("%d ",A[i]);
-	for(int i=1;i<p;++i) 
-		printf("%d ",A[i]);
-	puts("");
-	return 0;
+    int n;
+    scanf("%d", &n);
+    vector<int>A(n+1);
+    for(int i=1;i<=n;++i) 
+        scanf("%d",&A[i]);
+    int p=Solution(&A[0],n);
+    for(int i=p;i<=n;++i) 
+        printf("%d ",A[i]);
+    for(int i=1;i<p;++i) 
+        printf("%d ",A[i]);
+    puts("");
+    return 0;
 }
 /*
 
