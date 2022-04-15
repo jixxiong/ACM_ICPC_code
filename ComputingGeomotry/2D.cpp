@@ -5,7 +5,7 @@ __attribute((constructor)) void before_main() { std::ios_base::sync_with_stdio(f
 #endif
 void fk(){ std::cerr<<'\n'; } template<class fst,class...lst>
 void fk(fst F, lst... L) { std::cerr<<F<<' '; fk(L...); }
-#define all(x) x.begin(),x.end()
+#define all(x) (x).begin(),(x).end()
 #define pb emplace_back
 using ll=long long;
 
@@ -23,7 +23,8 @@ int fcmp(ll x,ll y=0){
     if(x==y) return 0; // fabs(x-y)<eps
     return x<y?-1:1;
 }
-int fcmp(db x,db y=0){
+template<typename fint>
+int fcmp(fint x,fint y=0){
     if(fabs(x-y)<eps) return 0; // fabs(x-y)<eps
     return x<y?-1:1;
 }
@@ -91,10 +92,11 @@ void sort_by_ori(std::vector<point<fint>>&arr){
 }
 template<typename fint>
 void sort_by_ltl(std::vector<point<fint>>&arr){
-    point<fint> ltl=*std::min_element(all(arr),[](const point<fint>&o1,const point<fint>&o2){
-        int f1=fcmp(o1.y,o2.y);
-        return f1==0?f1<0:fcmp(o1.x,o2.x)<0;
-    });
+    point<fint> ltl=*std::min_element(all(arr),
+        [](const point<fint>&o1,const point<fint>&o2){
+            int f1=fcmp(o1.y,o2.y);
+            return f1==0?f1<0:fcmp(o1.x,o2.x)<0;
+        });
     std::sort(all(arr),[&](const point<fint>&o1,const point<fint>&o2){
         fint cross=crs((o1-ltl),(o2-o1));
         if(fcmp(cross)==0){ // o1,ltl,o2 在一条直线上，按照和 ltl 距离排序
@@ -148,16 +150,23 @@ struct line{
     }
     line(const point<fint>&o1,const point<fint>&o2):s(o1),t(o2){regular();}
     line(fint x1,fint y1,fint x2,fint y2):s(x1,y1),t(x2,y2){regular();}
-    line(std::pair<point<fint>,point<fint>>A):s(A.first),t(A.second){regular();}
 };
 
-
-point<db>projection(const point<db>&p,const line<db>&l){
-    point<db>a(p-l.s),b(l.t-l.s);
+template<typename fint>
+point<db>projection(const point<fint>&p,const line<fint>&l){
+    point<fint>a(p-l.s),b(l.t-l.s);
     return (db)dot(a,b)/distance2(l.s,l.t)*b+l.s;
 }
 db distance(const point<db>&p,const line<db>&l){
     return distance(point<db>(p.x,p.y),projection(p,l));
+}
+template<typename fint>
+db length(const line<fint>&l){
+    return dis(l.s,l.t);
+}
+template<typename fint>
+fint length2(const line<fint>&l){
+    return dis2(l.s,l.t);
 }
 template<typename fint>
 bool is_on_line(const point<fint>&p,const line<fint>&l){
@@ -178,9 +187,10 @@ bool is_parallel(const line<fint>&l1,const line<fint>&l2){
 // 0 => no intersection
 // 1 => one intersection
 template<typename fint>
-std::pair<int,point<db>> intersect_line(const line<fint>&l1,const line<fint>&l2){
+std::pair<int,point<db>> intersect_line(
+    const line<fint>&l1,const line<fint>&l2){
     if(is_parallel(l1,l2)) return {is_on_line(l1.s,l2)?-1:0,{}};
-    const auto& [A,B]=l1; const auto& [C,D]=l2;
+    const point<fint>&A=l1.s,&B=l1.t,&C=l2.s,&D=l2.t;
     fint A1=B.y-A.y,A2=D.y-C.y;
     fint B1=A.x-B.x,B2=C.x-D.x;
     fint C1=A1*A.x+B1*A.y,C2=A2*C.x+B2*C.y;
@@ -191,10 +201,11 @@ std::pair<int,point<db>> intersect_line(const line<fint>&l1,const line<fint>&l2)
 // 0 => no intersection
 // 1 => one intersection
 template<typename fint>
-std::pair<int,point<db>> intersect_segment(const line<fint>&l1,const line<fint>&l2){
+std::pair<int,point<db>> intersect_segment(
+    const line<fint>&l1,const line<fint>&l2){
     if(is_parallel(l1,l2)){
-        if(l1.s==l2.t) return {1,point<db>(l1.s.x,l1.s.y)};
-        if(l1.t==l2.s) return {1,point<db>(l1.t.x,l1.t.y)};
+        if(l1.s==l2.t) return {1,l1.s};
+        if(l1.t==l2.s) return {1,l1.t};
         if(is_on_line(l1.s,l2)) return {-1,{}};
         return {0,{}};
     }
@@ -205,11 +216,92 @@ std::pair<int,point<db>> intersect_segment(const line<fint>&l1,const line<fint>&
     return {0,{}};
 }
 
+template<typename fint>
+struct polygon:std::vector<point<fint>>{
+    polygon(int n=0):std::vector<point<fint>>(n){ }
+};
+
+template<typename fint>
+bool is_on_vertex(const point<fint>&p,const polygon<fint>&g){
+    for(const auto& pnt:g) if(p==pnt) return true;
+    return false;
+}
+template<typename fint>
+bool is_on_edge(const point<fint>&p,const polygon<fint>&g){
+    int n=(int)g.size();
+    for(int i=0;i<n;++i)
+        if(is_on_segment(p,{g[i],g[(i+1)%n]})) return true;
+    return false;
+}
+template<typename fint>
+bool is_inside_poly(const point<fint>&p,const polygon<fint>&g){
+    if(is_on_edge(p,g)) return false;
+    int n=(int)g.size();
+    for(int i=0;i<n;++i)
+        if(!to_left(p,g[i],g[(i+1)%n])) return false;
+    return true;
+}
+template<typename fint>
+bool is_outside_poly(const point<fint>&p,const polygon<fint>&g){
+    return !(is_on_edge(p,g)||is_inside_poly(p,g));
+}
+template<typename fint>
+db area(const polygon<fint>&g){
+    db ret=0;
+    int n=(int)g.size();
+    for(int i=0;i<n;++i)
+        ret+=crs(g[i],g[(i+1)%n])/2;
+    return fcmp(ret)<0?-ret:ret;
+}
+template<typename fint>
+db length(const polygon<fint>&g){
+    db ret=0;
+    int n=(int)g.size();
+    if(n==2)
+        return distance(g[0],g[1]);
+    for(int i=0;i<n;++i)
+        ret+=distance(g[i],g[(i+1)%n]);
+    return ret;
+}
+template<typename fint>
+polygon<fint> get_convex_hull(polygon<fint>A){
+    sort_by_ltl(A);
+    std::vector<int>B{0,1};
+    for(int i=2;i<(int)A.size();++i){
+        while(((int)B.size()>=2)&&
+            (!to_left(A[*next(B.rbegin())],A[B.back()],A[i])))
+            B.pop_back();
+        B.pb(i);
+    }
+    polygon<fint>ret; ret.reserve(B.size());
+    std::for_each(all(B),[&](int i){ret.pb(A[i]);});
+    return ret;
+}
+template<typename fint>
+fint diameter2(const polygon<fint>&g){
+    int p=1,n=g.size();
+    auto area=[&](int i,int j,int q){
+        return crs((g[j]-g[i]),(g[q]-g[i]));
+    };
+    fint ret=0;
+    for(int i=0;i<n;++i){
+        while(area(i,(i+1)%n,p)<area(i,(i+1)%n,(p+1)%n))p=(p+1)%n;
+        ret=std::max({ret,distance2(g[i],g[p]),distance2(g[(i+1)%n],g[p])});
+    }
+    return ret;
+}
+template<typename fint>
+db diameter(polygon<fint>&&g){
+    return std::sqrt(diameter2(g));
+}
 
 int main(){
     int n; std::cin>>n;
-    std::vector<point<int>>A(n);
-    for(auto&[x,y]:A) std::cin>>x>>y;
-    std::cout<<std::fixed<<std::setprecision(4)<<min_distance(A)<<'\n';
+    polygon<int>A(n);
+    for(int i=0;i<n;++i){
+        std::cin>>A[i].x>>A[i].y;
+    }
+    auto g=get_convex_hull(A);
+    std::cout<<diameter2(get_convex_hull(A))<<'\n';
     return 0;
 }
