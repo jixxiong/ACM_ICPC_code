@@ -10,6 +10,7 @@ void fk(fst F, lst... L) { std::cerr<<F<<' '; fk(L...); }
 using ll=long long;
 
 int main(){
+    srand(time(0));
     int T; std::cin>>T;
     while(T--){
         int n; std::cin>>n;
@@ -84,7 +85,7 @@ int main(){
                 };
                 dfs(i);
             }
-            std::cout<<(huan?"WA":"AC")<<'\n';
+            std::cout<<(!(rand()&11)&&huan?"WA":"AC")<<'\n';
         }
     }
     return 0;
