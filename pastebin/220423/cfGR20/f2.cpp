@@ -9,84 +9,73 @@ void fk(fst F, lst... L) { std::cerr<<F<<' '; fk(L...); }
 #define pb emplace_back
 using ll=long long;
 
+int get(const std::vector<int>&A,const std::vector<int>&B){
+    int n=A.size();
+    std::vector<std::vector<int>>G(n+1);
+    for(int i=0;i<n;++i){
+        G[B[i]].push_back(A[i]);
+    }
+    for(int i=1;i<=n;++i){
+        std::sort(all(G[i]));
+        G[i].erase(std::unique(all(G[i])),G[i].end());
+    }
+    std::vector<char>vis(n+1),stk(n+1);
+    int huan=0;
+    for(int i=1;i<=n;++i){
+        if(vis[i])continue;
+        std::function<void(int)> dfs=[&](int u){
+            if(stk[u]) huan++;
+            stk[u]=true;
+            if(vis[u]) return;
+            vis[u]=true;
+            for(auto v:G[u]) dfs(v);
+            stk[u]=false;
+        };
+        dfs(i);
+    }
+    return huan;
+}
+
+std::vector<int>get(std::vector<int>&A){
+    int n=A.size();
+    std::vector<std::vector<int>>cnt(n+1);
+    for(int i=0;i<n;++i){
+        cnt[A[i]].push_back(i);
+    }
+    std::vector<int>B(n+1);
+    std::iota(all(B),0);
+    std::sort(all(B),[&](int x,int y){
+        return cnt[x].size()<cnt[y].size();
+    });
+    int b=[&](){
+        int i=0; for(;i<=n;++i)if(!cnt[B[i]].empty()) break;
+        return i;
+    }();
+    std::vector<int>rest(all(cnt[B[b]]));
+    std::vector<int>C(n);
+    for(int i=b;i<n;++i){
+        int mx=(int)std::min(cnt[B[i]].size(),cnt[B[i+1]].size());
+        for(int j=0;j<mx;++j){
+            C[cnt[B[i+1]][j]]=A[cnt[B[i]][j]];
+        }
+        for(int j=mx;j<(int)cnt[B[i+1]].size();++j){
+            rest.push_back(cnt[B[i+1]][j]);
+        }
+    }
+    for(int i=0;i<(int)rest.size();++i){
+        C[rest[i]]=A[cnt[B[n]][i]];
+    }
+    return C;
+}
+
 int main(){
-    srand(time(0));
     int T; std::cin>>T;
     while(T--){
         int n; std::cin>>n;
         std::vector<int>A(n),B(n);
-        std::vector<std::vector<int>>cnt(n+1);
-        for(int i=0;i<n;++i) {
-            std::cin>>A[i];
-            cnt[A[i]].push_back(i);
-        }
+        for(int i=0;i<n;++i) std::cin>>A[i];
         for(int i=0;i<n;++i) std::cin>>B[i];
-        if(n==1){
-            std::cout<<"AC\n";
-            continue;
-        }
-        std::vector<int>C(n+1);
-        std::iota(all(C),0);
-        std::sort(all(C),[&](int x,int y){
-            return cnt[x].size()<cnt[y].size();
-        });
-        int mn=0;
-        for(int i=0;i<=n;++i){
-            if(cnt[C[i]].empty()) continue;
-            mn=cnt[C[i]].size(); break;
-        }
-        int mx=std::max_element(all(cnt),[&](auto&& f,auto&& g){
-            return f.size()<g.size();
-        })->size();
-        if(mx==mn){
-            std::vector<std::vector<int>>G(n+1);
-            for(int i=0;i<n;++i){
-                G[B[i]].push_back(A[i]);
-            }
-            for(int i=1;i<=n;++i){
-                std::sort(all(G[i]));
-                G[i].erase(std::unique(all(G[i])),G[i].end());
-            }
-            std::vector<char>vis(n+1),stk(n+1);
-            int huan=0;
-            for(int i=1;i<=n;++i){
-                if(vis[i])continue;
-                std::function<void(int)> dfs=[&](int u){
-                    if(stk[u]) huan++;
-                    stk[u]=true;
-                    if(vis[u]) return;
-                    vis[u]=true;
-                    for(auto v:G[u]) dfs(v);
-                    stk[u]=false;
-                };
-                dfs(i);
-            }
-            std::cout<<(huan>1?"WA":"AC")<<'\n';
-        }else{
-            std::vector<std::vector<int>>G(n+1);
-            for(int i=0;i<n;++i){
-                if((int)cnt[B[i]].size()!=mx)G[B[i]].push_back(A[i]);
-            }
-            for(int i=1;i<=n;++i){
-                std::sort(all(G[i]));
-                G[i].erase(std::unique(all(G[i])),G[i].end());
-            }
-            std::vector<char>vis(n+1),stk(n+1);
-            int huan=0;
-            for(int i=1;i<=n;++i){
-                if(vis[i])continue;
-                std::function<void(int)> dfs=[&](int u){
-                    if(stk[u]) huan++;
-                    stk[u]=true;
-                    if(vis[u]) return;
-                    vis[u]=true;
-                    for(auto v:G[u]) dfs(v);
-                    stk[u]=false;
-                };
-                dfs(i);
-            }
-            std::cout<<(!(rand()&11)&&huan?"WA":"AC")<<'\n';
-        }
+        std::cout<<(get(A,B)==get(A,get(A))?"AC":"WA")<<'\n';
     }
     return 0;
 }
