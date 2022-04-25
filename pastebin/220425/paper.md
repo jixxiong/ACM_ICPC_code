@@ -1,0 +1,1 @@
+$$f(i,j)=\sum_kf(i-k,j-lgk-1)$$
