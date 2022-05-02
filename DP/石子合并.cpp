@@ -12,19 +12,17 @@ using ll=long long;
 int main(){
     int n; std::cin>>n;
     std::vector<int>A(n+1);
-    for(int i=1;i<=n;++i) std::cin>>A[i];
     std::vector<std::vector<int>>f(n+1,std::vector<int>(n+1,0x3f3f3f3f));
-    for(int i=1;i<=n;++i) f[i][i]=A[i];
+    for(int i=1;i<=n;++i){
+        std::cin>>A[i];
+        f[i][i]=0;
+        A[i]+=A[i-1];
+    }
     for(int k=2;k<=n;++k){
         for(int i=1;i<=n-k+1;++i){
             for(int j=i;j<i+k-1;++j){
-                f[i][i+k-1]=std::min(f[i][i+k-1],f[i][j]+f[j+1][i+k-1]);
+                f[i][i+k-1]=std::min(f[i][i+k-1],f[i][j]+f[j+1][i+k-1]+A[i+k-1]-A[i-1]);
             }
-        }
-    }
-    for(int i=1;i<=n;++i){
-        for(int j=1;j<=n;++j){
-            std::cout<<f[i][j]<<" \n"[j==n];
         }
     }
     std::cout<<f[1][n]<<'\n';
