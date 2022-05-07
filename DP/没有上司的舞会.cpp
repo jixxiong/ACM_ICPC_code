@@ -11,19 +11,23 @@ using ll=long long;
 
 int main(){
     int n; std::cin>>n;
+    std::vector<std::vector<int>>G(n+1);
+    for(int i=2;i<=n;++i){
+        int fa; std::cin>>fa;
+        G[fa].pb(i);
+    }
     std::vector<int>A(n+1);
     for(int i=1;i<=n;++i) std::cin>>A[i];
-    std::vector<std::vector<int>>f(n+2,std::vector<int>(n+2,0));
-    for(int i=2;i<=n-1;++i)f[i][i]=A[i]*A[i-1]*A[i+1];
-    for(int l=2;l<=n-2;++l){
-        for(int i=2;i+l-1<=n-1;++i){
-            int j=i+l-1;
-            f[i][j]=0x3f3f3f3f;
-            for(int k=i;k<=j;++k){
-                f[i][j]=std::min(f[i][j],f[i][k-1]+f[k+1][j]+A[k]*A[i-1]*A[j+1]);
-            }
+    std::vector<std::array<ll,2>>f(n+1,std::array<ll,2>{});
+    std::function<void(int)>dfs=[&](int u){
+        for(auto v:G[u]){
+            dfs(v);
+            f[u][0]+=std::max(f[v][0],f[v][1]);
+            f[u][1]+=f[v][0];
         }
-    }
-    std::cout<<f[2][n-1]<<'\n';
+        f[u][1]+=A[u];
+    };
+    dfs(1);
+    std::cout<<std::max(f[1][0],f[1][1])<<'\n';
     return 0;
 }
