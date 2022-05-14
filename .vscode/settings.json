@@ -75,5 +75,6 @@
         "filesystem": "cpp",
         "iterator": "cpp",
         "random": "cpp"
-    }
+    },
+    "python.formatting.provider": "autopep8"
 }
