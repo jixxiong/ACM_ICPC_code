@@ -16,15 +16,36 @@ int range(int l,int r){
 }
 
 int main(){
-    // int w; std::cin>>w;
-    // int const N=1000000;
-    // int const s1=1,s2=1000,s3=10000;
+    int const N=100000;
     std::vector<int>A;
-    for(int i=0;i<35;++i) A.pb(i+1);
-    for(int i=0;i<65;++i) A.pb(range(1,200));
-    for(int i=0;i<200;++i) A.pb(range(1000,1000000/3+1));
+    std::set<int>st;
+    std::vector<int>vis2(N+10);
+    int const M=10;
+    for(int i=1;i<=M;++i){
+        A.pb(i);
+        st.insert(i);
+        vis2[i]=true;
+        for(int j=i+1;j<=M;++j){
+            st.insert(i+j);
+            vis2[i+j]=true;
+            for(int k=j+1;k<=M;++k){
+                st.insert(i+j+k);
+                vis2[i+j+k]=true;
+            }
+        }
+    }
+    for(int i=4;i<=N;++i){
+        if(vis2[i]) continue;
+        int j=i;
+        for(auto x:st){
+            if(x+j>N) break;
+            vis2[x+j]=true;
+        }
+        for(auto x:A) st.insert(x+j);
+        A.pb(j);
+        st.insert(j);
+    }
     std::cout<<A.size()<<'\n';
     for(auto x:A) std::cout<<x<<' ';
-    std::cout<<'\n';
     return 0;
 }
