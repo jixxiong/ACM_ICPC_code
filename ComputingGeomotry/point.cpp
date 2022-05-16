@@ -2,20 +2,6 @@
 
 #include "head.h"
 
-using db=long double;
-db const eps=1e-9;
-db const PI=std::acos((db)-1.0);
-
-int fcmp(ll x,ll y=0){
-    if(x==y) return 0;
-    return x<y?-1:1;
-}
-
-int fcmp(db x,db y=0){
-    if(fabs(x-y)<eps) return 0;
-    return x<y?-1:1;
-}
-
 struct point{
     db x,y;
     point(db x=0,db y=0):x(x),y(y){ }
