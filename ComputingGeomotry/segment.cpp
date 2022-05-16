@@ -17,7 +17,7 @@ db length(seg l){
 }
 
 // 返回 p 是否在线段 l 上
-bool is_on_seg(point p,line l){
+bool is_on_seg(point p,seg l){
     if(is_point(l)) return p==l.s;
     return is_on_line(p,l)&&
             ((fcmp(l.s.y,l.t.y)==0)?
@@ -29,7 +29,7 @@ bool is_on_seg(point p,line l){
 // -1 => 线段相交于无数点
 // 0  => 线段无交点（平行，共线无交点...）
 // 1  => 线段仅有一个交点（可能头尾相接、交错相交）
-std::pair<int,point> intersect_seg(line l1,line l2){
+std::pair<int,point> intersect_seg(seg l1,seg l2){
     if(is_point(l1)){
         if(is_on_seg(l1.s,l2)) return {1,l1.s};
         return {0,{}};   
