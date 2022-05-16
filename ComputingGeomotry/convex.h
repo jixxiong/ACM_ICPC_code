@@ -1,8 +1,9 @@
 #pragma once
 
 #include "head.h"
-#include "point.cpp"
-#include "line.cpp"
+#include "point.h"
+#include "line.h"
+#include "segment.h"
 
 // 凸包的定义（一个 point 的数组，一般要求按照和 ltl 的极角序逆时针排序）
 using polygon=std::vector<point>;
@@ -17,7 +18,7 @@ bool is_on_vertex(point p,polygon const& g){
 bool is_on_edge(point p,polygon const& g){
     int n=(int)g.size();
     for(int i=0;i<n;++i)
-        if(is_on_segment(p,{g[i],g[(i+1)%n]})) return true;
+        if(is_on_seg(p,{g[i],g[(i+1)%n]})) return true;
     return false;
 }
 
@@ -55,9 +56,11 @@ db length(polygon const& g){
     return ret;
 }
 
-// 返回 A 中点构成的凸包
+// 返回 A 中的点所构成的凸包
 polygon get_convex_hull(std::vector<point> A){
     sort_by_ltl(A);
+    A.erase(std::unique(all(A)),A.end());
+    if(A.size()==1) return A;
     std::vector<int>B{0,1};
     for(int i=2;i<(int)A.size();++i){
         while(((int)B.size()>=2)&&

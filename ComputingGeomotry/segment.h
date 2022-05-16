@@ -1,8 +1,8 @@
 #pragma once
 
 #include "head.h"
-#include "point.cpp"
-#include "line.cpp"
+#include "point.h"
+#include "line.h"
 
 using seg=line;
 

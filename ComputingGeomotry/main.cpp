@@ -1,7 +1,7 @@
 #include "head.h"
-#include "point.cpp"
-#include "line.cpp"
-#include "convex.cpp"
+#include "point.h"
+#include "line.h"
+#include "convex.h"
 
 int main(){
     int n; std::cin>>n;

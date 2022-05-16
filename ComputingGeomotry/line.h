@@ -1,7 +1,7 @@
 #pragma once
 
 #include "head.h"
-#include "point.cpp"
+#include "point.h"
 
 struct line{
     point s,t;
