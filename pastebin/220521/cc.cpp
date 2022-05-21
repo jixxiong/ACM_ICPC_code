@@ -12,16 +12,16 @@ using ll=long long;
 int main(){
     int T; std::cin>>T;
     while(T--){
-        ll x,y; std::cin>>x>>y;
-        ll a,b,c; std::cin>>a>>b>>c;
-        std::map<ll,ll>mp;
-        std::queue<ll>q; q.push(x);
+        int x,y; std::cin>>x>>y;
+        int a,b,c; std::cin>>a>>b>>c;
+        std::map<int,int>mp;
+        std::queue<int>q; q.push(x);
         mp[x]=0;
         while(!q.empty()){
-            ll u=q.front(); q.pop();
-            if(u>4*std::max(x,y)) continue;
+            int u=q.front(); q.pop();
+            if(u>100*y) continue;
             // pr(u,mp[u]);
-            ll v=u+1;
+            int v=u+1;
             if(!mp.count(v)||mp[v]>mp[u]+a) q.push(v), mp[v]=mp[u]+a;
             v=2*u;
             if(!mp.count(v)||mp[v]>mp[u]+b) q.push(v), mp[v]=mp[u]+b;

@@ -45,7 +45,7 @@ db area(polygon const& g){
     return fcmp(ret)<0?-ret:ret;
 }
 
-// 返回凸包 g 的
+// 返回凸包 g 的周长
 db length(polygon const& g){
     db ret=0;
     int n=(int)g.size();

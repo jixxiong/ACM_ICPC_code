@@ -4,15 +4,9 @@ import filecmp
 import sys
 
 
-def gen_data():
+def gen_data(n=10000,m=1000000000):
     with open('in.txt', 'w') as f:
-        n = random.randint(1, 100)
-        print(f'1\n{n}', file=f)
-        for i in range(2):
-            for j in range(n):
-                print('.' if random.randint(0, 1)
-                      == 0 else '*', end='', file=f)
-            print('', file=f)
+        print(f'1\n{random.randint(0,n)} {random.randint(0,n)}\n{random.randint(1,m)} {random.randint(1,m)} {random.randint(1,m)}\n',file=f)
 
 
 def run_case():
