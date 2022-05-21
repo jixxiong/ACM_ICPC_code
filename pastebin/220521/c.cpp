@@ -8,6 +8,9 @@ void pr(fst F, lst... L) { std::cerr<<F<<' '; pr(L...); }
 #define all(x) x.begin(),x.end()
 #define pb emplace_back
 using ll=long long;
+using ld=long double;
+
+ll const INF=1e18;
 
 int main(){
     int T; std::cin>>T;
@@ -21,8 +24,9 @@ int main(){
         };
         auto fun=[&](ll t){
             ll ret=0x3f3f3f3f3f3f3f3f;
-            for(int bit=0;bit<=63;++bit){
+            for(int bit=0;bit<63;++bit){
                 ll fk=t>>bit;
+                if(fk>INF/a) continue;
                 ll sum=fk*a;
                 fk=(t&((1ll<<(bit))-1));
                 sum+=bit*b;
@@ -35,23 +39,35 @@ int main(){
             std::cout<<fun(y)<<'\n';
             continue;
         }
+        if(y==0){
+            std::cout<<(std::__lg(x)+1)*c<<'\n';
+            continue;
+        }
         ll ret=0x3f3f3f3f3f3f3f3f;
-        for(ll bit=0;bit<=63;++bit){
+        for(ll bit=0;bit<63;++bit){
             ll sum=bit*c;
             if((x>>bit)==0){
                 ret=std::min(ret,sum+fun(y));
                 break;
             }
-            ll lgx=std::__lg(x>>bit);
-            ll lgy=std::__lg(y);
-            if(lgx>lgy) continue;
-            ll dif_bit=lgy-lgx;
-            ll add=(y>>dif_bit);
-            if(add>(x>>bit)) continue;
-            sum+=(add-(x>>bit))*a;
-            sum+=dif_bit*b;
-            sum+=count(((1ll<<(lgy-dif_bit))-1)&y)*a;
-            ret=std::min(sum,ret);
+            ll yy=y,zz=0,bs=0,cnt=0;
+            while(yy>=(x>>bit)){
+                if((yy-(x>>bit))>INF/a){
+                    zz|=(yy&1)<<bs;
+                    if(yy&1) cnt++;
+                    bs++;
+                    yy>>=1;
+                    continue;
+                }
+                ll s=sum+(yy-(x>>bit))*a;
+                s+=bs*b;
+                s+=cnt*a;
+                zz|=(yy&1)<<bs;
+                if(yy&1) cnt++;
+                bs++;
+                yy>>=1;
+                ret=std::min(ret,s);
+            }
         }
         std::cout<<ret<<'\n';
     }
