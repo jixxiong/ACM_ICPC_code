@@ -9,8 +9,8 @@ void pr(fst F, lst... L) { std::cerr<<F<<' '; pr(L...); }
 #define pb emplace_back
 using ll=long long;
 
-std::array<int,4> operator+(std::array<int,4> const&o1, std::array<int,4>const& o2){
-    return std::array<int,4>{
+std::array<ll,4> operator+(std::array<ll,4> const&o1, std::array<ll,4>const& o2){
+    return std::array<ll,4>{
         std::min(o1[0]+o2[0],o1[3]+o2[2]),
         std::min(o1[2]+o2[3],o1[1]+o2[1]),
         std::min(o1[2]+o2[0],o1[1]+o2[2]),
@@ -19,7 +19,7 @@ std::array<int,4> operator+(std::array<int,4> const&o1, std::array<int,4>const& 
 }
 
 struct SegTree{
-    using node=std::array<int,4>;
+    using node=std::array<ll,4>;
     std::vector<node>arr;
     std::vector<int> const &dx;
     std::vector<int> const &dy;
@@ -57,7 +57,7 @@ struct SegTree{
     }
 };
 
-int main(){
+int32_t main(){
     int n; std::cin>>n;
     std::vector<int>dx(n+1),dy(n+1);dx[0]=1,dy[0]=1;
     for(int i=1,t;i<n;++i){
@@ -67,13 +67,13 @@ int main(){
     int q; std::cin>>q;
     while(q--){
         int x1,y1,x2,y2; std::cin>>x1>>y1>>x2>>y2;
-        int l1=std::max(x1,y1),l2=std::max(x2,y2);
+        auto l1=std::max(x1,y1),l2=std::max(x2,y2);
         if(l1>l2) std::swap(x1,x2),std::swap(y1,y2),std::swap(l1,l2);
         auto get=[](int x1,int y1,int x2,int y2){
-            int l1=std::max(x1,y1),l2=std::max(x2,y2);
+            auto l1=std::max(x1,y1),l2=std::max(x2,y2);
             assert(l1==l2);
-            int dx1=y1==l1?x1:2*l1-y1;
-            int dx2=y2==l1?x2:2*l2-y2;
+            auto dx1=y1==l1?x1:2*l1-y1;
+            auto dx2=y2==l1?x2:2*l2-y2;
             return std::abs(dx1-dx2);
         };
         if(l1==l2){
@@ -86,7 +86,7 @@ int main(){
             std::cout<<res<<'\n';   
         }else{
             auto pt=seg.get(1,1,n-1,l1+1,l2-1);
-            int res=std::min({
+            auto res=std::min({
                 pt[0]+get(x1,y1,dx[l1],l1)+get(x2,y2,dx[l2-1],l2)+1,
                 pt[1]+get(x1,y1,l1,dy[l1])+get(x2,y2,l2,dy[l2-1])+1,
                 pt[2]+get(x1,y1,l1,dy[l1])+get(x2,y2,dx[l2-1],l2)+1,
