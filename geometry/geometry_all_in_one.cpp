@@ -71,7 +71,7 @@ struct Convex:std::vector<Point<fint>>{
         inner ltl=*std::min_element(this->begin(),this->end(),[](inner o1,inner o2){ return fcmp(o1.x,o2.x)==0?fcmp(o1.y,o2.y)<0:fcmp(o1.x,o2.x)<0; });
         std::sort(this->begin(),this->end(),[ltl](inner o1,inner o2){
             auto cross=(o1-ltl).det(o2-ltl);
-            return fcmp(cross)==0?fcmp(o1.x,o2.x)<0:fcmp(cross)>0;
+            return fcmp(cross)==0?(fcmp(o1.x,o2.x)==0?fcmp(o1.y,o2.y)<0:fcmp(o1.x,o2.x)<0):fcmp(cross)>0;
         });
     }
     void to_convex(){
@@ -103,6 +103,17 @@ struct Convex:std::vector<Point<fint>>{
     }
     ld diameter(){
         return std::sqrt(diameter2());
+    }
+    ld perimeter(){
+        Self& g=*this;
+        int n=g.size();
+        if(n<=1) return 0;
+        if(n==2) return g[0].dis(g[1]) * 2; // unsure
+        ld ret=0;
+        for(int i=0;i<n;++i){
+            ret+=g[i].dis(g[(i+1)%n]);
+        }
+        return ret;
     }
 };
 
@@ -142,10 +153,9 @@ struct Circle3{
 
 int32_t main(){
     int n; std::cin>>n;
-    Convex<int>A(n);
+    Convex<ld>A(n);
     std::cin>>A;
-    A.sort_by_ltl();
     A.to_convex();
-    std::cout<<std::fixed<<std::setprecision(0)<<(A.diameter2())<<'\n';
+    std::cout<<std::fixed<<std::setprecision(2)<<(A.perimeter())<<'\n';
     return 0;
 }

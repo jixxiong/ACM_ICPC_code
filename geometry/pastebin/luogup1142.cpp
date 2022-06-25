@@ -146,6 +146,7 @@ int32_t main(){
     std::cin>>A;
     A.sort_by_ltl();
     A.to_convex();
+    std::cout<<A<<'\n';
     std::cout<<std::fixed<<std::setprecision(0)<<(A.diameter2())<<'\n';
     return 0;
 }
