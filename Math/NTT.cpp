@@ -54,11 +54,11 @@ namespace NTT{
         for(i32 i=0;i<limit;++i) if(i<R[i]) std::swap(A[i],A[R[i]]);
         for(i32 mid=1;mid<limit;mid<<=1){
             i32 const wn=qpow((tp==1?g:gi),(p-1)/(mid<<1),p);
-            for(i32 len=mid<<1,pos=0;pos<limit;pos+=len){
+            for(i32 len=mid<<1,j=0;j<limit;j+=len){
                 for(i32 k=0,w=1;k<mid;++k,w=(i64)w*wn%p){
-                    i32 x=A[pos+k],y=(i64)w*A[pos+k+mid]%p;
-                    A[pos+k]=(x+y)%p;
-                    A[pos+k+mid]=(x-y+p)%p;
+                    i32 x=A[j+k],y=(i64)w*A[j+k+mid]%p;
+                    A[j+k]=(x+y)%p;
+                    A[j+k+mid]=(x-y+p)%p;
                 }
             }
         }
