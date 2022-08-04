@@ -29,8 +29,8 @@ ll const mod=998244353;
 // 求无向图的割点割边信息
 // 求无向图的点双、边双信息
 // 用点双、边双对无向图缩点
-struct CutEdge{
-    vvc<char>ce;   // ce[i][j]=true 代表 i->G[i][j] 为割边
+struct UndirectedGraphCuts{
+    vvc<char>ce;   // ce[i][j]=true 代表 i<-->G[i][j] 为割边
     vc <char>cv;   // cv[i]=true 代表点 i 为割点
     i32 edcc;      // edcc 边双数量
     i32 ecut_num;  // ecut_num 割边数量
@@ -41,7 +41,7 @@ struct CutEdge{
     vvc<i32> vBCC; // vBCC 为点双连通分量包含的点的编号
     vvc<i32> vDCC; // vDCC 为按照点双连通分量缩点之后的图, 点双和割点连边
     vvc<i32> vcol; // vcol[i] 为第 i 个点所处的点双连通分量的编号有哪些
-    CutEdge(vvc<i32>const&G,vvc<i32>const&inv,i32 n):
+    UndirectedGraphCuts(vvc<i32>const&G,vvc<i32>const&inv,i32 n):
     ce(n+1),cv(n+1),edcc(0),ecol(n+1),vdcc(0),vcut_num(0),vcol(n+1){
         // tarjan
         vc<i32>dfn(n+1),low(n+1);
@@ -150,7 +150,7 @@ int32_t main(){
         inv_idx[u].pb(iv),inv_idx[v].pb(iu);
         G[u].pb(v); G[v].pb(u);
     }
-    CutEdge C(G,inv_idx,n);
+    UndirectedGraphCuts C(G,inv_idx,n);
     std::cout<<C.vdcc<<'\n';
     for(i32 i=1;i<=C.vdcc;++i){
         std::cout<<C.vBCC[i].size();
@@ -160,4 +160,24 @@ int32_t main(){
         std::cout<<'\n';
     }
     return 0;
+}
+
+struct edge{
+    i32 v;
+    i32 inv_idx;
+};
+
+vvc<edge>G(n+1);
+
+i32 u,v;
+i32 iu=G[u].size(),iv=G[v].size();
+
+G[u].pb(edge{v,iv});
+G[v].pb(edge{u,iu});
+
+for(i32 i=1;i<=n;++i){
+    for(i32 j=0;j<(i32)G[i].size();++j){
+        auto [v,inv_idx]=G[i][j];
+        // G[i][j] 的反边就是 G[v][inv_idx]
+    }
 }
