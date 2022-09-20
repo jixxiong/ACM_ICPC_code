@@ -31,6 +31,21 @@ ld const PI=std::acos((ld)-1.0);
 ll const mod=998244353;
 
 int32_t main(){
-    
+    i32 T; std::cin>>T;
+    while(T--){
+        i32 n; std::cin>>n;
+        std::string s; std::cin>> s;
+        s = ' ' + s;
+        std::map<i32,i32>mp;
+        mp[0]=1;
+        i32 cnt=0;
+        i64 ret=0;
+        for(i32 i=1;i<=n;++i){
+            cnt+=s[i]^'0';
+            ret+=mp[cnt-i];
+            mp[cnt-i]++;
+        }
+        std::cout<<ret<<'\n';
+    }
     return 0;
 }
