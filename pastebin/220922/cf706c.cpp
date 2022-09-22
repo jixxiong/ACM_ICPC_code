@@ -29,28 +29,31 @@ template<typename T>vvvvvc<T> vccccc(i32 s1=0,i32 s2=0,i32 s3=0,i32 s4=0,i32 s5=
 ld const EPS=1e-8;
 ld const PI=std::acos((ld)-1.0);
 ll const mod=998244353;
+ll const inf=0x3f3f3f3f3f3f3f3f;
 
 int32_t main(){
-    i32 T; std::cin>>T;
-    while(T--){
-        i32 n,k,z; std::cin>>n>>k>>z;
-        auto dp=vccc<i64>(2,z+1,n+2);
-        auto A=vc<i32>(n+1);
-        for(i32 i=1;i<=n;++i){
-            std::cin>>A[i];
-            dp[0][0][i]=dp[0][0][i-1]+A[i];
-        }
-        i64 ret=dp[0][0][k+1];
-        for(i32 stp=1;stp<=z;++stp){
-            for(i32 i=1;i<=n;++i){
-                dp[0][stp][i]=std::max(dp[0][stp][i-1],dp[1][stp][i-1])+A[i];
-                dp[1][stp][i]=dp[0][stp-1][i+1]+A[i];
-                if((i-1)+2*stp==k){
-                    ret=std::max({ret,dp[0][stp][i],dp[1][stp][i]});
-                }
-            }
-        }
-        std::cout<<ret<<'\n';
+    i32 n; std::cin>>n;
+    auto A=vc<i32>(n+1);
+    auto S=vc<std::string>(n+1);
+    for(i32 i=1;i<=n;++i){
+        std::cin>>A[i];
     }
+    for(i32 i=1;i<=n;++i){
+        std::cin>>S[i];
+    }
+    auto T=S;
+    for(i32 i=1;i<=n;++i){
+        std::reverse(all(T[i]));
+    }
+    auto dp=vcc<i64>(2,n+1,inf);
+    dp[0][0]=dp[1][0]=0;
+    for(i32 i=1;i<=n;++i){
+        if(S[i-1]<=S[i]) dp[0][i]=std::min(dp[0][i],dp[0][i-1]);
+        if(T[i-1]<=S[i]) dp[0][i]=std::min(dp[0][i],dp[1][i-1]);
+        if(S[i-1]<=T[i]) dp[1][i]=std::min(dp[1][i],dp[0][i-1]+A[i]);
+        if(T[i-1]<=T[i]) dp[1][i]=std::min(dp[1][i],dp[1][i-1]+A[i]);
+        du(dp[0][i],dp[1][i]);
+    }
+    std::cout<<(std::min(dp[0][n],dp[1][n])>inf/2?-1:std::min(dp[0][n],dp[1][n]))<<'\n';
     return 0;
 }

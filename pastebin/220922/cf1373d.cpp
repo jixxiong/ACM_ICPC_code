@@ -31,26 +31,23 @@ ld const PI=std::acos((ld)-1.0);
 ll const mod=998244353;
 
 int32_t main(){
-    i32 T; std::cin>>T;
+    i32 T;
+    std::cin>>T;
     while(T--){
-        i32 n,k,z; std::cin>>n>>k>>z;
-        auto dp=vccc<i64>(2,z+1,n+2);
+        i32 n; std::cin>>n;
         auto A=vc<i32>(n+1);
         for(i32 i=1;i<=n;++i){
             std::cin>>A[i];
-            dp[0][0][i]=dp[0][0][i-1]+A[i];
         }
-        i64 ret=dp[0][0][k+1];
-        for(i32 stp=1;stp<=z;++stp){
-            for(i32 i=1;i<=n;++i){
-                dp[0][stp][i]=std::max(dp[0][stp][i-1],dp[1][stp][i-1])+A[i];
-                dp[1][stp][i]=dp[0][stp-1][i+1]+A[i];
-                if((i-1)+2*stp==k){
-                    ret=std::max({ret,dp[0][stp][i],dp[1][stp][i]});
-                }
+        auto dp=vccc<i64>(2,2,n+1);
+        for(i32 i=1;i<=n;++i){
+            dp[0][0][i]=dp[0][0][i-1]+(i&1?A[i]:0);
+            if(i>1){
+                dp[1][0][i]=std::max(dp[1][0][i-1],dp[1][1][i-1])+(i&1?A[i]:0);
+                dp[1][1][i]=std::max(dp[0][0][i-2],dp[1][1][i-2])+(i&1?A[i-1]:A[i]);
             }
         }
-        std::cout<<ret<<'\n';
+        std::cout<<std::max({dp[0][0][n],dp[1][0][n],dp[1][1][n]})<<'\n';
     }
     return 0;
 }
