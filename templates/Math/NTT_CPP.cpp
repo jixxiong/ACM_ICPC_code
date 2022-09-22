@@ -56,49 +56,61 @@ struct ModInt{
     Self inv()const{ return pow(p-2); }
     Self operator/(Self o)const{ return *this*o.inv(); }
 };
-using Mint=ModInt<i32,mod>;
+using mint=ModInt<i32,mod>;
 
-int norm(int x) {
-    x%=mod; // 可以常数优化
-    if(x<0) x+=mod;
-    // if(x>=mod) x-=mod;
-    return x;
-}
-
-int ksm(int x,int y) {
-    if(x==0&&y==0) return 1;
-    if(x==0) return 0;
-    int ret=1;
-    while(y) {if(y&1) ret=ret*x%mod; x=x*x%mod; y>>=1;}
-    return ret;
-}
-
-struct mint {
-    int x;
-    mint(int x=0):x(norm(x)) {}
-    int val() const {return x;}
-    mint operator-() const {return mint(norm(mod-x));}
-    mint inv() const {return mint(ksm(x,mod-2));}
-    mint &operator*=(const mint &eax) {x=x*eax.x%mod; return *this;}
-    mint &operator-=(const mint &eax) {x=norm(x-eax.x); return *this;}
-    mint &operator+=(const mint &eax) {x=norm(x+eax.x); return *this;}
-    mint &operator/=(const mint &eax) {return *this*=eax.inv();}
-    friend mint operator*(const mint &eax,const mint &ebx) {mint ret=eax; ret*=ebx; return ret;}
-    friend mint operator-(const mint &eax,const mint &ebx) {mint ret=eax; ret-=ebx; return ret;}
-    friend mint operator+(const mint &eax,const mint &ebx) {mint ret=eax; ret+=ebx; return ret;}
-    friend mint operator/(const mint &eax,const mint &ebx) {mint ret=eax; ret/=ebx; return ret;}
-    friend std::istream &operator>>(std::istream &ins,mint &eax) {int value; ins>>value; eax=mint(value); return ins;}
-    friend std::ostream &operator<<(std::ostream &outs,const mint &eax) {return outs<<eax.val();}
+struct poly:vc<mint>{
+    i32 static const p=mod, g=3, gi=p/g+1;
+    static i32 limit;
+    static vc<i32>R;
+    poly(i32 n):vc<mint>(n){ }
+    poly(vc<mint>const &o):vc<mint>(o){ }
+    void pre(i32 n){
+        i32 L=std::__lg(n)+1; limit=1<<L;
+        if((i32)R.size()==limit) return ;
+        R.resize(limit);
+        for(i32 i=0;i<limit;++i) R[i]=(R[i>>1]>>1)|((i&1)<<(L-1));
+    }
+    void dft(bool tp){ // true -> dft, false -> idft
+        auto& A=*this;
+        if((i32)A.size()<limit) A.resize(limit);
+        for(i32 i=0;i<limit;++i) if(i<R[i]) std::swap(A[i],A[R[i]]);
+        for(i32 mid=1;mid<limit;mid<<=1){
+            mint const wn=mint(tp?g:gi).pow((p-1)/(mid<<1));
+            for(i32 len=mid<<1,j=0;j<limit;j+=len){
+                mint w=1;
+                for(i32 k=0;k<mid;++k,w*=wn){
+                    mint x=A[j+k],y=w*A[j+k+mid];
+                    A[j+k]=x+y, A[j+k+mid]=x-y;
+                }
+            }
+        }
+        if(tp) return ;
+        mint inv=mint(limit).pow(p-2);
+        for(i32 i=0;i<limit;++i) A[i]*=inv;
+    }
+    poly mul(poly &b,i32 upper=0x3f3f3f3f){
+        auto& a=*this;
+        if((i32)a.size()>upper+1) a.resize(upper+1);
+        if((i32)b.size()>upper+1) b.resize(upper+1);
+        i32 n=a.size()-1,m=b.size()-1;
+        pre(n+m);
+        a.dft(true), b.dft(true);
+        poly c(limit);
+        for(i32 i=0;i<limit;++i) c[i]=a[i]*b[i];
+        c.dft(false);
+        c.resize(std::min(upper+1,n+m+1));
+        return c;
+    }
 };
-
+i32 poly::limit{};
+vc<i32>poly::R{};
 
 int32_t main(){
-    std::mt19937 rng(4933);
-    while(true){
-        int a=rng()%mod,b=rng()%mod;
-        assert((mint(a)*mint(b)).val()==(Mint(a)*Mint(b)).val());
-        assert((mint(a)+mint(b)).val()==(Mint(a)+Mint(b)).val());
-        assert((mint(a)-mint(b)).val()==(Mint(a)-Mint(b)).val());
-    }
+    i32 n,m; std::cin>>n>>m;
+    poly A(n+1),B(m+1);
+    for(i32 i=0;i<=n;++i) std::cin>>A[i];
+    for(i32 i=0;i<=m;++i) std::cin>>B[i];
+    auto C=A.mul(B);
+    for(int i=0;i<=n+m;++i) std::cout<<C[i]<<' ';
     return 0;
 }
