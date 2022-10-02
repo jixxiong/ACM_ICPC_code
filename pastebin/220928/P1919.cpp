@@ -16,19 +16,20 @@ void _du(){std::cerr<<std::endl;}template<class F,class...L>void _du(F f,L...l){
 #define i32 int32_t
 #define i64 int64_t
 #define i128 __int128
-template<typename T>using vc=std::vector<T>;
-template<typename T>using vvc=std::vector<vc<T>>;
-template<typename T>using vvvc=std::vector<vvc<T>>;
-template<typename T>using vvvvc=std::vector<vvvc<T>>;
-template<typename T>using vvvvvc=std::vector<vvvvc<T>>;
-template<typename T>vvc<T> vcc(i32 s1=0,i32 s2=0,const T&init=T()){ return vvc<T>(s1,vc<T>(s2,init)); }
-template<typename T>vvvc<T> vccc(i32 s1=0,i32 s2=0,i32 s3=0,const T&init=T()){ return vvvc<T>(s1,vcc(s2,s3,init)); }
-template<typename T>vvvvc<T> vcccc(i32 s1=0,i32 s2=0,i32 s3=0,i32 s4=0,const T&init=T()){ return vvvvc<T>(s1,vccc(s2,s3,s4,init)); }
-template<typename T>vvvvvc<T> vccccc(i32 s1=0,i32 s2=0,i32 s3=0,i32 s4=0,i32 s5=0,const T&init=T()){ return vvvvvc<T>(s1,vcccc(s2,s3,s4,s5,init)); }
+template<class T>using vc    =std::vector<T>;
+template<class T>using vvc   =vc<vc<T>>;
+template<class T>using vvvc  =vc<vvc<T>>;
+template<class T>using vvvvc =vc<vvvc<T>>;
+template<class T>using vvvvvc=vc<vvvvc<T>>;
+template<class T> auto vcc   (i32 _1=0,i32 _2=0,const T&init=T()){ return vvc<T>(_1,vc<T>(_2,init)); }
+template<class T> auto vccc  (i32 _1=0,i32 _2=0,i32 _3=0,const T&init=T()){ return vvvc<T>(_1,vcc(_2,_3,init)); }
+template<class T> auto vcccc (i32 _1=0,i32 _2=0,i32 _3=0,i32 _4=0,const T&init=T()){ return vvvvc<T>(_1,vccc(_2,_3,_4,init)); }
+template<class T> auto vccccc(i32 _1=0,i32 _2=0,i32 _3=0,i32 _4=0,i32 _5=0,const T&init=T()){ return vvvvvc<T>(_1,vcccc(_2,_3,_4,_5,init)); }
+template<class T>T INF(){ return std::numeric_limits<T>::max(); }
 
 ld const EPS=1e-8;
 ld const PI=std::acos((ld)-1.0);
-ll const mod=998244353;
+i64 const mod=998244353;
 
 template<class fint,fint const p,class LargerInt=i64>
 struct ModInt{
@@ -111,11 +112,28 @@ struct poly:vc<mint>{
    i32  poly::limit{};
 vc<i32> poly::R{};
 
+
 int32_t main(){
-    i32 n,m; std::cin>>n>>m;
-    poly A(n+1),B(m+1);
-    std::cin>>A>>B;
+    std::string a,b; std::cin>>a>>b;
+    poly A(a.size()),B(b.size());
+    for(i32 i=(i32)a.size()-1;i>=0;--i){
+        A[(i32)a.size()-i-1]=a[i]^'0';
+    }
+    for(i32 i=(i32)b.size()-1;i>=0;--i){
+        B[(i32)b.size()-i-1]=b[i]^'0';
+    }
     auto C=mul(A,B);
-    for(int i=0;i<=n+m;++i) std::cout<<C[i]<<' ';
+    C.regular();
+    for(i32 i=0;i<(i32)C.size();++i){
+        if(C[i].val()>=10){
+            if(i==(i32)C.size()-1) C.resize(C.size()+1);
+            C[i+1]+=C[i].val()/10;
+            C[i]._x%=10;
+        }
+    }
+    for(i32 i=C.size()-1;i>=0;--i){
+        std::cout<<C[i];
+    }
+    std::cout<<'\n';
     return 0;
 }

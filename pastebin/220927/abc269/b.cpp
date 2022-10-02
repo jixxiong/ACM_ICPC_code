@@ -32,6 +32,22 @@ ld const PI=std::acos((ld)-1.0);
 i64 const mod=998244353;
 
 int32_t main(){
-    
+    vc<std::string>A(11);
+    for(i32 i=1;i<=10;++i){
+        std::cin>>A[i];
+        A[i] = ' ' + A[i];
+    }
+    i32 a=-1,b=-1,c=-1,d=-1;
+    for(i32 i=1;i<=10;++i){
+        for(i32 j=1;j<=10;++j){
+            if(A[i][j]=='#'){
+                if(a==-1) a=i;
+                b=i;
+                if(c==-1) c=j;
+                d=j;
+            }
+        }
+    }
+    std::cout<<a<<' '<<b<<'\n'<<c<<' '<<d<<'\n';
     return 0;
 }

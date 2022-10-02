@@ -68,34 +68,27 @@ struct MaximalMatching{
 };
 
 struct km {
-    int n;
-    vector<int> mx,my,pre;
-    vector<bool> visx,visy;
-    vector<int> lx,ly;
-    vector<vector<int>> g;
-    vector<int> slack;
-    int inf,res;
-    queue<int> q;
-    int nn,mm;
-    km(int _n,int _m) {
-        nn=_n; mm=_m;
-        n=max(nn,mm);
-        inf=numeric_limits<int>::max();
-        res=0;
-        g=vector<vector<int>> (n,vector<int>(n));
-        mx=vector<int> (n,-1);
-        my=vector<int> (n,-1);
-        pre=vector<int> (n);
-        visx=vector<bool> (n);
-        visy=vector<bool> (n);
-        lx=vector<int>(n,-inf);
-        ly=vector<int>(n);
-        slack=vector<int>(n);
-    }
-    void add(int u,int v,int w) {
+    i32 n,nn,mm;
+	i64 res;
+	i64 const inf;
+    vc<i32> mx,my,pre;
+    vc<char> visx,visy;
+    vc<i64> lx,ly;
+    vvc<i32> g;
+    vc<i64> slack;
+    queue<i32> q;
+    km(i32 n_,i32 m_):
+		n(std::max(n_,m_)),nn(n_),mm(m_),res(0),
+		inf(INF<i64>()),mx(n,-1),my(n,-1),pre(n),
+		visx(n),visy(n),lx(n,-inf),ly(n),slack(n) {
+
+	}
+    void add(i32 u,i32 v,i64 w) {
+		// u -> the u-th node in set A
+		// v -> the v-th node in set B
         g[u][v]=w;
     }
-    bool check(int v) {
+    bool check(i32 v) {
         visy[v]=true;
         if(my[v]!=-1) {
             q.push(my[v]);
@@ -109,18 +102,16 @@ struct km {
         return true;
     }
     void bfs(int i) {
-        while(!q.empty()) {
-            q.pop();
-        }
+        std::queue<i32>().swap(q);
         q.push(i);
         visx[i]=true;
         while(true) {
             while(!q.empty()) {
-                int u=q.front();
+                i32 u=q.front();
                 q.pop();
-                for(int v=0;v<n;v++) {
+                for(i32 v=0;v<n;v++) {
                     if(!visy[v]) {
-                        int delta=lx[u]+ly[v]-g[u][v];
+                        i64 delta=lx[u]+ly[v]-g[u][v];
                         if(slack[v]>=delta) {
                             pre[v]=u;
                             if(delta) {
@@ -132,13 +123,13 @@ struct km {
                     }
                 }
             }
-            int a=inf;
-            for(int j=0;j<n;j++) {
+            i64 a=inf;
+            for(i32 j=0;j<n;j++) {
                 if(!visy[j]) {
                     a=min(a,slack[j]);
                 }
             }
-            for(int j=0;j<n;j++) {
+            for(i32 j=0;j<n;j++) {
                 if(visx[j]) {
                     lx[j]-=a;
                 }
@@ -148,7 +139,7 @@ struct km {
                     slack[j]-=a;
                 }
             }
-            for(int j=0;j<n;j++) {
+            for(i32 j=0;j<n;j++) {
                 if(!visy[j]&&slack[j]==0&&check(j)) {
                     return;
                 }
@@ -156,18 +147,18 @@ struct km {
         }
     }
     int solve() {
-        for(int i=0;i<n;i++) {
-            for(int j=0;j<n;j++) {
+        for(i32 i=0;i<n;i++) {
+            for(i32 j=0;j<n;j++) {
                 lx[i]=max(lx[i],g[i][j]);
             }
         }
-        for(int i=0;i<n;i++) {
-            fill(slack.begin(),slack.end(),inf);
-            fill(visx.begin(),visx.end(),false);
-            fill(visy.begin(),visy.end(),false);
+        for(i32 i=0;i<n;i++) {
+            std::fill(slack.begin(),slack.end(),inf);
+            std::fill(visx.begin(),visx.end(),false);
+            std::fill(visy.begin(),visy.end(),false);
             bfs(i);
         }
-        for(int i=0;i<n;i++) {
+        for(i32 i=0;i<n;i++) {
             if(g[i][mx[i]]>0) res+=g[i][mx[i]];
             else mx[i]=-1;
         }

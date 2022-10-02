@@ -32,6 +32,14 @@ ld const PI=std::acos((ld)-1.0);
 i64 const mod=998244353;
 
 int32_t main(){
-    
+    i32 T; std::cin>>T;
+    while(T--){
+        i32 n,m; std::cin>>n>>m;
+        if(n==1||m==1){
+            std::cout<<n<<' '<<m<<'\n';
+        }else{
+            std::cout<<"2 2\n";
+        }
+    }
     return 0;
 }

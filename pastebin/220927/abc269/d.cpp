@@ -31,7 +31,40 @@ ld const EPS=1e-8;
 ld const PI=std::acos((ld)-1.0);
 i64 const mod=998244353;
 
+using node=std::pair<i32,i32>;
+
+vc<node>mv{{-1,-1},{-1,0},{0,-1},{0,1},{1,0},{1,1}};
+
 int32_t main(){
-    
+    i32 n; std::cin>>n;
+    std::set<node>st;
+    std::set<node>mp;
+    for(i32 i=1;i<=n;++i){
+        i32 x,y; std::cin>>x>>y;
+        mp.insert({x,y});
+    }
+    i32 ans=0;
+    for(auto pos:mp){
+        if(st.count(pos)) continue;
+
+        ans++;
+        std::queue<node>q;
+        q.push(pos);
+
+        while(!q.empty()){
+            auto [ux,uy] = q.front();
+            q.pop();
+
+            for(auto [mx,my]:mv){
+                i32 vx = ux + mx, vy = uy + my;
+
+                if(st.count({vx, vy})||!mp.count({vx, vy})) continue;
+
+                q.push({vx, vy});
+                st.insert({vx, vy});
+            }
+        }
+    }
+    std::cout<<ans<<'\n';
     return 0;
 }

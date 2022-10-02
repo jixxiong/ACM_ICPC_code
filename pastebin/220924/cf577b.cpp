@@ -21,17 +21,34 @@ template<class T>using vvc   =vc<vc<T>>;
 template<class T>using vvvc  =vc<vvc<T>>;
 template<class T>using vvvvc =vc<vvvc<T>>;
 template<class T>using vvvvvc=vc<vvvvc<T>>;
-template<class T> auto vcc   (i32 _1=0,i32 _2=0,const T&init=T()){ return vvc<T>(_1,vc<T>(_2,init)); }
-template<class T> auto vccc  (i32 _1=0,i32 _2=0,i32 _3=0,const T&init=T()){ return vvvc<T>(_1,vcc(_2,_3,init)); }
-template<class T> auto vcccc (i32 _1=0,i32 _2=0,i32 _3=0,i32 _4=0,const T&init=T()){ return vvvvc<T>(_1,vccc(_2,_3,_4,init)); }
-template<class T> auto vccccc(i32 _1=0,i32 _2=0,i32 _3=0,i32 _4=0,i32 _5=0,const T&init=T()){ return vvvvvc<T>(_1,vcccc(_2,_3,_4,_5,init)); }
-template<class T>T INF(){ return std::numeric_limits<T>::max(); }
+template<class T>auto  vcc   (i32 _1=0,i32 _2=0,const T&init=T()){ return vvc<T>(_1,vc<T>(_2,init)); }
+template<class T>auto  vccc  (i32 _1=0,i32 _2=0,i32 _3=0,const T&init=T()){ return vvvc<T>(_1,vcc(_2,_3,init)); }
+template<class T>auto  vcccc (i32 _1=0,i32 _2=0,i32 _3=0,i32 _4=0,const T&init=T()){ return vvvvc<T>(_1,vccc(_2,_3,_4,init)); }
+template<class T>auto  vccccc(i32 _1=0,i32 _2=0,i32 _3=0,i32 _4=0,i32 _5=0,const T&init=T()){ return vvvvvc<T>(_1,vcccc(_2,_3,_4,_5,init)); }
 
 ld const EPS=1e-8;
 ld const PI=std::acos((ld)-1.0);
 i64 const mod=998244353;
+i64 const inf=0x3f3f3f3f3f3f3f3f;
 
 int32_t main(){
-    
+    i32 n,k; std::cin>>n>>k;
+    vc<i32>A(n+1);
+    bool ok=false;
+    for(i32 i=1;i<=n;++i){
+        std::cin>>A[i];
+        A[i]%=k;
+        if(A[i]==0){
+            ok=true;
+        }
+    }
+    std::bitset<6000>f,g;
+    f.set(0,1);
+    for(i32 i=1;i<=n;++i){
+        g=(f<<A[i])|(f<<A[i]>>k);
+        f|=g;
+    }
+    ok|=f[k];
+    std::cout<<(ok?"YES":"NO")<<'\n';
     return 0;
 }

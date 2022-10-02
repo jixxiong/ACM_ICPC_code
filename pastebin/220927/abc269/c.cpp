@@ -32,6 +32,25 @@ ld const PI=std::acos((ld)-1.0);
 i64 const mod=998244353;
 
 int32_t main(){
-    
+    i64 N; std::cin>>N;
+    vc<i64>A;
+    for(i32 i=0;i<60;++i){
+        if((N>>i)&1){
+            A.pb(1ll<<i);
+        }
+    }
+    vc<i64>ans;
+    for(i32 i=0;i<(i32)(1<<(A.size()));++i){
+        i64 ret=0;
+        for(i32 j=0;j<(i32)A.size();++j){
+            if((i>>j)&1){
+                ret|=A[j];
+            }
+        }
+        ans.pb(ret);
+    }
+    for(auto x:ans){
+        std::cout<<x<<'\n';
+    }
     return 0;
 }

@@ -32,6 +32,34 @@ ld const PI=std::acos((ld)-1.0);
 i64 const mod=998244353;
 
 int32_t main(){
-    
+    i32 T; std::cin>>T;
+    while(T--){
+        i32 n; std::cin>>n;
+        vc<i32>d(n+1);
+        for(i32 i=1;i<=n;++i){
+            std::cin>>d[i];
+        }
+        vc<i64>a(n+1);
+        bool fail=false;
+        for(i32 i=1;i<=n;++i){
+            if(i==1){
+                a[i]=d[i];
+            }else{
+                if(d[i]&&a[i-1]>=d[i]){
+                    fail=true;
+                    break;
+                }else{
+                    a[i]=a[i-1]+d[i];
+                }
+            }
+        }
+        if(fail){
+            std::cout<<"-1\n";
+        }else{
+            for(i32 i=1;i<=n;++i){
+                std::cout<<a[i]<<" \n"[i==n];
+            }
+        }
+    }
     return 0;
 }

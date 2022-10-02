@@ -32,6 +32,7 @@ ld const PI=std::acos((ld)-1.0);
 i64 const mod=998244353;
 
 int32_t main(){
-    
+    i32 a,b,c,d; std::cin>>a>>b>>c>>d;
+    std::cout<<((a+b)*(c-d))<<"\nTakahashi\n";
     return 0;
 }

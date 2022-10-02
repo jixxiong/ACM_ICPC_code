@@ -32,6 +32,38 @@ ld const PI=std::acos((ld)-1.0);
 i64 const mod=998244353;
 
 int32_t main(){
-    
+    i32 T; std::cin>>T;
+    while(T--){
+        i32 n,k; std::cin>>n>>k;
+        auto G=vcc<i32>(n+1);
+        for(i32 v=2;v<=n;++v){
+            i32 u; std::cin>>u;
+            G[u].pb(v);
+        }
+        auto check=[&](i32 h)->bool{
+            i32 cnt=0;
+            std::function<i32(i32)>dfs=[&](i32 u){
+                i32 cur=0;
+                for(auto v:G[u]){
+                    i32 ht=dfs(v);
+                    if(u!=1&&ht==h) cnt++;
+                    if(ht!=h) cur=std::max(cur,ht);
+                }
+                return cur+1;
+            };
+            dfs(1);
+            return cnt<=k;
+        };
+        i32 l=0,r=n;
+        while(l+1<r){
+            i32 h=(l+r)>>1;
+            if(check(h)){
+                r=h;
+            }else{
+                l=h;
+            }
+        }
+        std::cout<<r<<'\n';
+    }
     return 0;
 }
