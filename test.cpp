@@ -31,7 +31,7 @@ ld const EPS=1e-8;
 ld const PI=std::acos((ld)-1.0);
 i64 const mod=998244353;
 
-int32_t main(){
+int32_t main() {
     
     return 0;
 }
