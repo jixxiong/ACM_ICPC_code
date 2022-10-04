@@ -22,7 +22,7 @@ template<class T>using vvvc  =vc<vvc<T>>;
 template<class T>using vvvvc =vc<vvvc<T>>;
 template<class T>using vvvvvc=vc<vvvvc<T>>;
 template<class T> auto vcc   (i32 _1=0,i32 _2=0,const T&init=T()){ return vvc<T>(_1,vc<T>(_2,init)); }
-template<class T> auto vccc  (i32 _1=0,iP2345 32 _2=0,i32 _3=0,const T&init=T()){ return vvvc<T>(_1,vcc(_2,_3,init)); }
+template<class T> auto vccc  (i32 _1=0,i32 _2=0,i32 _3=0,const T&init=T()){ return vvvc<T>(_1,vcc(_2,_3,init)); }
 template<class T> auto vcccc (i32 _1=0,i32 _2=0,i32 _3=0,i32 _4=0,const T&init=T()){ return vvvvc<T>(_1,vccc(_2,_3,_4,init)); }
 template<class T> auto vccccc(i32 _1=0,i32 _2=0,i32 _3=0,i32 _4=0,i32 _5=0,const T&init=T()){ return vvvvvc<T>(_1,vcccc(_2,_3,_4,_5,init)); }
 template<class T>T INF(){ return std::numeric_limits<T>::max(); }
@@ -32,6 +32,33 @@ ld const PI=std::acos((ld)-1.0);
 i64 const mod=998244353;
 
 int32_t main(){
-
+    i32 n; i64 k;
+    std::cin >> n >> k;
+    vc<i64> A(n + 1);
+    for (i32 i = 1; i <= n; ++i) {
+        std::cin >> A[i];
+    }
+    i64 l = -1, r = *std::max_element(1 + all(A)) + 1;
+    auto add = [&](i64 h) {
+        i64 ret = 0;
+        for (i32 i = 1; i <= n; ++i) {
+            ret += std::min(h, A[i]);
+        }
+        return ret;
+    };
+    while (l + 1 < r) {
+        i64 mid = (l + r) >> 1;
+        if (add(mid) <= k) l = mid;
+        else r = mid;
+    }
+    i64 cur = add(l);
+    for (i32 i = 1; i <= n; ++i) {
+        i64 ans = std::min(l, A[i]);
+        if (cur < k && A[i] > l) {
+            ans++;
+            cur++;
+        }
+        std::cout << A[i] - ans << " \n"[i == n];
+    }
     return 0;
 }

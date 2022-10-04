@@ -22,7 +22,7 @@ template<class T>using vvvc  =vc<vvc<T>>;
 template<class T>using vvvvc =vc<vvvc<T>>;
 template<class T>using vvvvvc=vc<vvvvc<T>>;
 template<class T> auto vcc   (i32 _1=0,i32 _2=0,const T&init=T()){ return vvc<T>(_1,vc<T>(_2,init)); }
-template<class T> auto vccc  (i32 _1=0,iP2345 32 _2=0,i32 _3=0,const T&init=T()){ return vvvc<T>(_1,vcc(_2,_3,init)); }
+template<class T> auto vccc  (i32 _1=0,i32 _2=0,i32 _3=0,const T&init=T()){ return vvvc<T>(_1,vcc(_2,_3,init)); }
 template<class T> auto vcccc (i32 _1=0,i32 _2=0,i32 _3=0,i32 _4=0,const T&init=T()){ return vvvvc<T>(_1,vccc(_2,_3,_4,init)); }
 template<class T> auto vccccc(i32 _1=0,i32 _2=0,i32 _3=0,i32 _4=0,i32 _5=0,const T&init=T()){ return vvvvvc<T>(_1,vcccc(_2,_3,_4,_5,init)); }
 template<class T>T INF(){ return std::numeric_limits<T>::max(); }
@@ -32,6 +32,31 @@ ld const PI=std::acos((ld)-1.0);
 i64 const mod=998244353;
 
 int32_t main(){
-
+    i32 n, k; std::cin >> n >> k;
+    vc<i32> A(k + 1);
+    for (i32 i = 1; i <= k; ++i) {
+        std::cin >> A[i];
+    }
+    using node = std::pair<i32, bool>;
+    std::map<node, std::pair<i32, i32>> mp;
+    auto dfs = [&](auto&& self, i32 x, bool op) -> std::pair<i32, i32> {
+        if (!x) {
+            return {0, 0};
+        }
+        if (mp.count({x, op})) {
+            return mp[{x, op}];
+        }
+        i32 a1 = 0, a2 = 0;
+        for (i32 i = 1; i <= k && x >= A[i]; ++i) {
+            auto [s1, s2] = self(self, x - A[i], op ^ 1);
+            if ((op == 0 && s1 + A[i] > a1) ||
+                (op == 1 && s2 + A[i] > a2)) {
+                    if (op == 0) a1 = s1 + A[i], a2 = s2;
+                    else a1 = s1, a2 = s2 + A[i];
+                }
+        }
+        return mp[{x, op}] = {a1, a2};
+    };
+    std::cout << dfs(dfs, n, 0).first << '\n';
     return 0;
 }

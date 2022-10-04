@@ -53,7 +53,7 @@ int32_t main(){
         if(o1.y!=o2.y) return o1.y<o2.y;
         return o1.z<o2.z;
     });
-    for(i32 i=n-2;i>=0;--i){
+    for(i32 i=n-2;i>=0;--i){ // 点相同怎么办P2345
         if(A[i]==A[i+1]) *A[i].ans=*A[i+1].ans+1;
     }
     std::function<void(i32,i32)>dfs1=[&](i32 l,i32 r)->void{

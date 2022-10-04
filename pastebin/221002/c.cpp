@@ -22,7 +22,7 @@ template<class T>using vvvc  =vc<vvc<T>>;
 template<class T>using vvvvc =vc<vvvc<T>>;
 template<class T>using vvvvvc=vc<vvvvc<T>>;
 template<class T> auto vcc   (i32 _1=0,i32 _2=0,const T&init=T()){ return vvc<T>(_1,vc<T>(_2,init)); }
-template<class T> auto vccc  (i32 _1=0,iP2345 32 _2=0,i32 _3=0,const T&init=T()){ return vvvc<T>(_1,vcc(_2,_3,init)); }
+template<class T> auto vccc  (i32 _1=0,i32 _2=0,i32 _3=0,const T&init=T()){ return vvvc<T>(_1,vcc(_2,_3,init)); }
 template<class T> auto vcccc (i32 _1=0,i32 _2=0,i32 _3=0,i32 _4=0,const T&init=T()){ return vvvvc<T>(_1,vccc(_2,_3,_4,init)); }
 template<class T> auto vccccc(i32 _1=0,i32 _2=0,i32 _3=0,i32 _4=0,i32 _5=0,const T&init=T()){ return vvvvvc<T>(_1,vcccc(_2,_3,_4,_5,init)); }
 template<class T>T INF(){ return std::numeric_limits<T>::max(); }
@@ -31,7 +31,50 @@ ld const EPS=1e-8;
 ld const PI=std::acos((ld)-1.0);
 i64 const mod=998244353;
 
-int32_t main(){
+struct DSU:vc<i32>{
+    DSU(i32 n):vc<i32>(n+1){
+        std::iota(begin(),end(),0);
+    }
+    i32 get(i32 x){
+        return x==(*this)[x]?x:((*this)[x]=get((*this)[x]));
+    }
+    void merge(i32 x,i32 y){
+        x=get(x),y=get(y);
+        (*this)[x]=y;
+    }
+};
 
+int32_t main(){
+    i32 T; std::cin>>T;
+    while(T--){
+        i32 n; std::cin>>n;
+        std::string t; std::cin>>t;
+        t = ' ' + t;
+        std::map<char,char>mp;
+        std::map<char,bool>out;
+        DSU dsu(200);
+        std::string s;
+        for(i32 i=1;i<=n;++i){
+            if(!mp.count(t[i])){
+                for(char ch='a';ch<='z';++ch){
+                    if(dsu.get(t[i])==dsu.get(ch)||out[ch]) continue;
+                    mp[t[i]]=ch;
+                    dsu.merge(t[i],ch);
+                    out[ch]=true;
+                    break;
+                }
+            }
+            if(!mp.count(t[i])){
+                for(char ch='a';ch<='z';++ch){
+                    if(!out[ch]){
+                        mp[t[i]]=ch;
+                        out[ch]=true;
+                    }
+                }
+            }
+            s+=mp[t[i]];
+        }
+        std::cout<<s<<'\n';
+    }
     return 0;
 }
