@@ -25,13 +25,28 @@ template<class T> auto vcc   (i32 _1=0,i32 _2=0,const T&init=T()){ return vvc<T>
 template<class T> auto vccc  (i32 _1=0,i32 _2=0,i32 _3=0,const T&init=T()){ return vvvc<T>(_1,vcc(_2,_3,init)); }
 template<class T> auto vcccc (i32 _1=0,i32 _2=0,i32 _3=0,i32 _4=0,const T&init=T()){ return vvvvc<T>(_1,vccc(_2,_3,_4,init)); }
 template<class T> auto vccccc(i32 _1=0,i32 _2=0,i32 _3=0,i32 _4=0,i32 _5=0,const T&init=T()){ return vvvvvc<T>(_1,vcccc(_2,_3,_4,_5,init)); }
-template<class T>T INF(){ return std::numeric_limits<T>::max(); }
+template<class T> T INF() { return std::numeric_limits<T>::max(); }
 
 ld const EPS=1e-8;
 ld const PI=std::acos((ld)-1.0);
 i64 const mod=998244353;
 
 int32_t main() {
-    
+    i32 n, m, k; std::cin >> n >> m >> k;
+    vc<std::array<i32, 3>> edges(m + 1);
+    vc<i32> E(k + 1);
+    for (i32 i = 1; i <= m; ++i) {
+        std::cin >> edges[i][0] >> edges[i][1] >> edges[i][2];
+    }
+    vc<i64> dis(n + 1, 0x3f3f3f3f3f3f3f3f);
+    dis[1] = 0;
+    for (i32 i = 1; i <= k; ++i) {
+        std::cin >> E[i];
+        auto [u, v, d] = edges[E[i]];
+        if (dis[v] > dis[u] + d) {
+            dis[v] = dis[u] + d;
+        }
+    }
+    std::cout << (dis[n] == 0x3f3f3f3f3f3f3f3f ? -1 : dis[n]) << '\n';
     return 0;
 }

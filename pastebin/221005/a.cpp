@@ -25,13 +25,19 @@ template<class T> auto vcc   (i32 _1=0,i32 _2=0,const T&init=T()){ return vvc<T>
 template<class T> auto vccc  (i32 _1=0,i32 _2=0,i32 _3=0,const T&init=T()){ return vvvc<T>(_1,vcc(_2,_3,init)); }
 template<class T> auto vcccc (i32 _1=0,i32 _2=0,i32 _3=0,i32 _4=0,const T&init=T()){ return vvvvc<T>(_1,vccc(_2,_3,_4,init)); }
 template<class T> auto vccccc(i32 _1=0,i32 _2=0,i32 _3=0,i32 _4=0,i32 _5=0,const T&init=T()){ return vvvvvc<T>(_1,vcccc(_2,_3,_4,_5,init)); }
-template<class T>T INF(){ return std::numeric_limits<T>::max(); }
+template<class T> T INF() { return std::numeric_limits<T>::max(); }
 
 ld const EPS=1e-8;
 ld const PI=std::acos((ld)-1.0);
 i64 const mod=998244353;
 
+char mp(i32 x) {
+    if (x < 10) return x ^ '0';
+    else return x - 10 + 'A';
+}
+
 int32_t main() {
-    
+    i32 x; std::cin >> x;
+    std::cout << mp(x / 16) << mp(x % 16) << '\n';
     return 0;
 }

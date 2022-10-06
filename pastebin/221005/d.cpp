@@ -25,13 +25,47 @@ template<class T> auto vcc   (i32 _1=0,i32 _2=0,const T&init=T()){ return vvc<T>
 template<class T> auto vccc  (i32 _1=0,i32 _2=0,i32 _3=0,const T&init=T()){ return vvvc<T>(_1,vcc(_2,_3,init)); }
 template<class T> auto vcccc (i32 _1=0,i32 _2=0,i32 _3=0,i32 _4=0,const T&init=T()){ return vvvvc<T>(_1,vccc(_2,_3,_4,init)); }
 template<class T> auto vccccc(i32 _1=0,i32 _2=0,i32 _3=0,i32 _4=0,i32 _5=0,const T&init=T()){ return vvvvvc<T>(_1,vcccc(_2,_3,_4,_5,init)); }
-template<class T>T INF(){ return std::numeric_limits<T>::max(); }
+template<class T> T INF() { return std::numeric_limits<T>::max(); }
 
 ld const EPS=1e-8;
 ld const PI=std::acos((ld)-1.0);
 i64 const mod=998244353;
 
 int32_t main() {
-    
+    i32 n, s; std::cin >> n >> s;
+    vc<i32> A(n + 1), B(n + 1);
+    for (i32 i = 1; i <= n; ++i) {
+        std::cin >> A[i] >> B[i];
+    }
+    auto dp = vcc<char>(n + 1, s + 1);
+    dp[0][0] = true;
+    for (i32 i = 1; i <= n; ++i) {
+        for (i32 j = 1; j <= s; ++j) {
+            if (j >= A[i] && dp[i - 1][j - A[i]]) {
+                dp[i][j] = 'H';
+            }
+            if (j >= B[i] && dp[i - 1][j - B[i]]) {
+                dp[i][j] = 'T';
+            }
+        }
+    }
+    i32 x = n, y = s;
+    if (!dp[x][y]) {
+        std::cout << "No" << '\n';
+        return 0;
+    }
+    std::string ans;
+    while (x) {
+        ans += dp[x][y];
+        if (dp[x][y] == 'H') {
+            y -= A[x];
+        } else {
+            y -= B[x];
+        }
+        x--;
+    }
+    std::reverse(all(ans));
+    std::cout << "Yes" << '\n';
+    std::cout << ans << '\n';
     return 0;
 }
