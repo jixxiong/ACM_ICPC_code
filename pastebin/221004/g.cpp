@@ -49,27 +49,28 @@ struct my_hash{
     }
 };
 
-ll qpow(ll x,ll y,ll m){
+i64 qpow(i64 x,i64 y,i64 m){
     if(y==0) return 1;
-    ll ret=1;
+    i64 ret=1;
     for(;y>0;y>>=1,x=x*x%m)
         if(y&1) ret=ret*x%m;
     return ret;
 }
 
-// given a,b,m, where gcd(a,m)=1, find the minium x s.t. a^x=b(mod m)
-ll BSGS(ll a,ll b,ll m){
-    a%=m,b%=m;
-    if(b==1) return 0;
-    static std::unordered_map<ll,ll,my_hash>hs;
-    hs.clear();
-    ll t=(ll)sqrt(m)+1;
-    for(int i=0,cur=b;i<t;++i) hs[cur]=i,cur=cur*a%m;
-    ll stp=qpow(a,t,m);
-    for(ll A=1,cur=stp;A<=t;++A) {
-        auto it=hs.find(cur);
-        if(it!=hs.end()) return A*t-it->second;
-        cur=cur*stp%m;
+
+i64 BSGS(i64 S, i64 A, i64 B, i64 G, i64 P){
+    static std::unordered_map<i64, i64, my_hash> hs; hs.clear();
+    i64 t = (i64)sqrt(P) + 1;
+    for (i64 i = 0, cur = G; i < t; ++i)
+        hs[cur] = i, cur = (cur * A % P + B) % P;
+    i64 A_K = qpow(A, t, P);
+    i64 A_B = 1;
+    for (i64 i = 1, cur = A; i < t; ++i)
+        A_B = (A_B + cur) % P, cur = cur * A % P;
+    for (i64 a = 1, cur = (S * A_K % P + A_B * B % P) % P; a <= t; ++a) {
+        auto it = hs.find(cur);
+        if(it != hs.end()) return a * t - it->second;
+        cur = (cur * A_K % P + A_B * B % P) % P;
     }
     return -1;
 }
@@ -87,7 +88,7 @@ int32_t main(){
             } else {
                 std::cout << "-1\n";
             }
-        } else if (A == 1) {
+        } if (A == 1) {
             // B * x + P * y = G - S
             // a: B, b: P, c: G - S
             i64 a = B, b = P, c = ((G - S) % P + P) % P;
@@ -102,15 +103,31 @@ int32_t main(){
                 std::cout << x << '\n';
             }
         } else {
-            // A ^ k * (S + B / (A - 1)) = (B / (A - 1) + G)
-            if (B % (A - 1) != 0 || (B / (A - 1) + G) % (S + B / (A - 1)) != 0) {
-                std::cout << "-1\n";
-            } else {
-                i64 a = A, b = (B / (A - 1) + G) / (S + B / (A - 1)), m = P;
-                i64 ret = BSGS(a, b, m);
-                std::cout << ret << '\n';
-            }
+            // x_0 = S
+            // x_i = A * x_{i - 1} + B (mod P)
+            i64 ret = BSGS(S, A, B, G, P);
+            std::cout << ret << '\n';
         }
     }
     return 0;
 }
+
+/*
+
+if (A == 1) {
+    // B * x + P * y = G - S
+    // a: B, b: P, c: G - S
+    i64 a = B, b = P, c = ((G - S) % P + P) % P;
+    i64 x, y;
+    i64 g = exgcd(a, b, x, y);
+    if (c % g != 0) {
+        std::cout << "-1\n";
+    } else {
+        i64 d = c / g;
+        x = (x % (b / g) + b / g) % (b / g);
+        x *= d;
+        std::cout << x << '\n';
+    }
+}
+
+*/
