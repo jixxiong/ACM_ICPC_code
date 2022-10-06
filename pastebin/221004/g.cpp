@@ -31,10 +31,54 @@ ld const EPS=1e-8;
 ld const PI=std::acos((ld)-1.0);
 i64 const mod=998244353;
 
+i64 exgcd(i64 a, i64 b, i64 &x, i64 &y) {
+    if (!b) return x = 1, y = 0, a;
+    i64 d = exgcd(b, a % b, x, y), t = x;
+    x = y, y = t - (a / b) * y;
+    return d;
+}
+
+struct my_hash{
+    size_t operator()(size_t x)const{
+        static const size_t random_shift=std::chrono::steady_clock::now().time_since_epoch().count();
+        x+=random_shift;
+        x+=0x9e3779b97f4a7c15;
+        x=(x^(x>>30))*0xbf58476d1ce4e5b9;
+        x=(x^(x>>27))*0x94d049bb133111eb;
+        return x^(x>>31);
+    }
+};
+
+ll qpow(ll x,ll y,ll m){
+    if(y==0) return 1;
+    ll ret=1;
+    for(;y>0;y>>=1,x=x*x%m)
+        if(y&1) ret=ret*x%m;
+    return ret;
+}
+
+// given a,b,m, where gcd(a,m)=1, find the minium x s.t. a^x=b(mod m)
+ll BSGS(ll a,ll b,ll m){
+    a%=m,b%=m;
+    if(b==1) return 0;
+    static std::unordered_map<ll,ll,my_hash>hs;
+    hs.clear();
+    ll t=(ll)sqrt(m)+1;
+    for(int i=0,cur=b;i<t;++i) hs[cur]=i,cur=cur*a%m;
+    ll stp=qpow(a,t,m);
+    for(ll A=1,cur=stp;A<=t;++A) {
+        auto it=hs.find(cur);
+        if(it!=hs.end()) return A*t-it->second;
+        cur=cur*stp%m;
+    }
+    return -1;
+}
+
+
 int32_t main(){
     i32 T; std::cin >> T;
     while (T--) {
-        i32 P, A, B, S, G; std::cin >> P >> A >> B >> S >> G;
+        i64 P, A, B, S, G; std::cin >> P >> A >> B >> S >> G;
         if (A == 0) {
             if (G == S) {
                 std::cout << "0\n";
@@ -44,11 +88,28 @@ int32_t main(){
                 std::cout << "-1\n";
             }
         } else if (A == 1) {
-            // i = (G - S) / B + 1
-            
+            // B * x + P * y = G - S
+            // a: B, b: P, c: G - S
+            i64 a = B, b = P, c = ((G - S) % P + P) % P;
+            i64 x, y;
+            i64 g = exgcd(a, b, x, y);
+            if (c % g != 0) {
+                std::cout << "-1\n";
+            } else {
+                i64 d = c / g;
+                x = (x % (b / g) + b / g) % (b / g);
+                x *= d;
+                std::cout << x << '\n';
+            }
         } else {
-            // A ^ k = (B / (A - 1) + G) / (S + B / (A - 1))
-
+            // A ^ k * (S + B / (A - 1)) = (B / (A - 1) + G)
+            if (B % (A - 1) != 0 || (B / (A - 1) + G) % (S + B / (A - 1)) != 0) {
+                std::cout << "-1\n";
+            } else {
+                i64 a = A, b = (B / (A - 1) + G) / (S + B / (A - 1)), m = P;
+                i64 ret = BSGS(a, b, m);
+                std::cout << ret << '\n';
+            }
         }
     }
     return 0;
