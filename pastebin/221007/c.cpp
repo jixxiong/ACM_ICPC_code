@@ -31,30 +31,25 @@ ld const EPS = 1e-8;
 ld const PI = std::acos((ld)-1.0);
 i64 const mod = 998244353;
 
-// 函数功能: 求 x, y, st. a * x + b * y = gcd(a, b)
-// 返回 g = gcd(a, b), x, y
-// x = x_0 + b / g * k, y = y_0 + a / g * k
-i64 exgcd(i64 a, i64 b, i64 &x, i64 &y) {
-    if (!b) return x = 1, y = 0, a;
-    i64 d = exgcd(b, a % b, x, y), t = x;
-    x = y, y = t - (a / b) * y;
-    return d;
-}
-
 int32_t main() {
-    i64 n, p, w, d; std::cin >> n >> p >> w >> d;
-    i64 x = -1, y = -1;
-    i64 r = exgcd(w, d, x, y);
-    if (p % r != 0) {
-        std::cout << "-1\n";
-    } else {
-        y = (y % (w / r) + (w / r)) % (w / r);
-        y *= p % w / r;
-        
-        if (x + y > n) {
-            std::cout << "-1\n";
+    i32 T; std::cin >> T;
+    while (T--) {
+        i32 n; std::cin >> n;
+        i32 r1, c1, r2, c2, r3, c3;
+        std::cin >> r1 >> c1 >> r2 >> c2 >> r3 >> c3;
+        i32 x, y;
+        std::cin >> x >> y;
+
+        i32 nr = r1 ^ r2 ^ r3;
+        i32 nc = c1 ^ c2 ^ c3;
+        if (!(std::abs(nr - x) & 1) && !(std::abs(nc - y) & 1)) {
+            std::cout << "NO" << '\n';
         } else {
-            std::cout << x << ' ' << y << ' ' << n - x - y << '\n';
+            i32 nr = r1 == r2 || r1 == r3 ? r1 : r2;
+            i32 nc = c1 == c2 || c1 == c3 ? c1 : c2;
+            if ((nr == 1 || nr == n) && (nc == 1 || nc == n)) {
+                std::cout << (x == nr || y == nc ? "YES" : "NO") << '\n';
+            } else std::cout << "YES" << '\n';
         }
     }
     return 0;

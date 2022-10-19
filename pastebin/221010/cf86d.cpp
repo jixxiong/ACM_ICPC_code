@@ -31,31 +31,47 @@ ld const EPS = 1e-8;
 ld const PI = std::acos((ld)-1.0);
 i64 const mod = 998244353;
 
-// 函数功能: 求 x, y, st. a * x + b * y = gcd(a, b)
-// 返回 g = gcd(a, b), x, y
-// x = x_0 + b / g * k, y = y_0 + a / g * k
-i64 exgcd(i64 a, i64 b, i64 &x, i64 &y) {
-    if (!b) return x = 1, y = 0, a;
-    i64 d = exgcd(b, a % b, x, y), t = x;
-    x = y, y = t - (a / b) * y;
-    return d;
-}
+struct node {
+    static i32 const BLOCKSIZE = 500;
+    i32 l{}, r{}, id{};
+    bool operator <(node const& o) const {
+        return l / BLOCKSIZE == o.l / BLOCKSIZE ? r < o.r : l < o.l;
+    }
+};
 
 int32_t main() {
-    i64 n, p, w, d; std::cin >> n >> p >> w >> d;
-    i64 x = -1, y = -1;
-    i64 r = exgcd(w, d, x, y);
-    if (p % r != 0) {
-        std::cout << "-1\n";
-    } else {
-        y = (y % (w / r) + (w / r)) % (w / r);
-        y *= p % w / r;
-        
-        if (x + y > n) {
-            std::cout << "-1\n";
-        } else {
-            std::cout << x << ' ' << y << ' ' << n - x - y << '\n';
-        }
+    i32 n, t; std::cin >> n >> t;
+    vc<i32> A(n + 1);
+    for (i32 i = 1; i <= n; ++i) {
+        std::cin >> A[i];
+    }
+    vc<node> Q(t + 1);
+    for (i32 i = 1; i <= t; ++i) {
+        std::cin >> Q[i].l >> Q[i].r;
+        Q[i].id = i;
+    }
+    std::sort(1 + all(Q));
+    vc<i32> cnt(*std::max_element(1 + all(A)) + 1);
+    vc<i64> ans(t + 1);
+    i64 sum = 0;
+    auto del = [&](i32 x) {
+        sum = sum - (i64)cnt[x] * cnt[x] * x + (i64)(cnt[x] - 1) * (cnt[x] - 1) * x;
+        cnt[x]--;
+    };
+    auto add = [&](i32 x) {
+        sum = sum + (i64)(cnt[x] + 1) * (cnt[x] + 1) * x - (i64)cnt[x] * cnt[x] * x;
+        cnt[x]++;
+    };
+    for (i32 i = 1, j = 0, k = 1; k <= t; ++k) {
+        auto [l, r, id] = Q[k];
+        while (i > l) add(A[--i]);
+        while (j < r) add(A[++j]);
+        while (i < l) del(A[i++]);
+        while (j > r) del(A[j--]);
+        ans[id] = sum;
+    }
+    for (i32 i = 1; i <= t; ++i) {
+        std::cout << ans[i] << '\n';
     }
     return 0;
 }

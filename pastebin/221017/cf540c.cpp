@@ -31,31 +31,56 @@ ld const EPS = 1e-8;
 ld const PI = std::acos((ld)-1.0);
 i64 const mod = 998244353;
 
-// 函数功能: 求 x, y, st. a * x + b * y = gcd(a, b)
-// 返回 g = gcd(a, b), x, y
-// x = x_0 + b / g * k, y = y_0 + a / g * k
-i64 exgcd(i64 a, i64 b, i64 &x, i64 &y) {
-    if (!b) return x = 1, y = 0, a;
-    i64 d = exgcd(b, a % b, x, y), t = x;
-    x = y, y = t - (a / b) * y;
-    return d;
-}
-
 int32_t main() {
-    i64 n, p, w, d; std::cin >> n >> p >> w >> d;
-    i64 x = -1, y = -1;
-    i64 r = exgcd(w, d, x, y);
-    if (p % r != 0) {
-        std::cout << "-1\n";
-    } else {
-        y = (y % (w / r) + (w / r)) % (w / r);
-        y *= p % w / r;
-        
-        if (x + y > n) {
-            std::cout << "-1\n";
-        } else {
-            std::cout << x << ' ' << y << ' ' << n - x - y << '\n';
+    i32 n, m; std::cin >> n >> m;
+    auto A = vcc<char>(n + 2, m + 2, 'X');
+    for (i32 i = 1; i <= n; ++i) {
+        for (i32 j = 1; j <= m; ++j) {
+            std::cin >> A[i][j];
         }
     }
+    vc<std::tuple<i32, i32>> move_dir = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    i32 sx, sy, ex, ey; std::cin >> sx >> sy >> ex >> ey;
+    if (sx == ex && sy == ey) {
+        bool ok = false;
+        for (auto [mx, my]: move_dir) {
+            if (A[ex + mx][ey + my] == '.') {
+                ok = true;
+            }
+        }
+        std::cout << (ok ? "YES\n": "NO\n");
+        return 0;
+    }
+    if (A[ex][ey] == '.') {
+        A[sx][sy] = '.';
+        i32 cnt = 0;
+        for (auto [mx, my]: move_dir) {
+            cnt += A[ex + mx][ey + my] == '.';
+        }
+        if (cnt < 2) {
+            std::cout << "NO\n";
+            return 0;
+        }
+    }
+    A[ex][ey] = '.';
+    auto vis = vcc<i32>(n + 2, m + 2);
+    std::queue<std::tuple<i32, i32>> q;
+    q.push({sx, sy});
+    vis[sx][sy] = true;
+    bool ok = false;
+    while (!q.empty()) {
+        auto [x, y] = q.front(); q.pop();
+        if (x == ex && y == ey) {
+            ok = true;
+            break;
+        }
+        for (auto [mx, my]: move_dir) {
+            i32 nx = x + mx, ny = y + my;
+            if (vis[nx][ny] || A[nx][ny] == 'X') continue;
+            vis[nx][ny] = true;
+            q.push({nx, ny});
+        }
+    }
+    std::cout << (ok ? "YES\n" : "NO\n");
     return 0;
 }

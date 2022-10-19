@@ -31,31 +31,55 @@ ld const EPS = 1e-8;
 ld const PI = std::acos((ld)-1.0);
 i64 const mod = 998244353;
 
-// 函数功能: 求 x, y, st. a * x + b * y = gcd(a, b)
-// 返回 g = gcd(a, b), x, y
-// x = x_0 + b / g * k, y = y_0 + a / g * k
-i64 exgcd(i64 a, i64 b, i64 &x, i64 &y) {
-    if (!b) return x = 1, y = 0, a;
-    i64 d = exgcd(b, a % b, x, y), t = x;
-    x = y, y = t - (a / b) * y;
-    return d;
-}
-
-int32_t main() {
-    i64 n, p, w, d; std::cin >> n >> p >> w >> d;
-    i64 x = -1, y = -1;
-    i64 r = exgcd(w, d, x, y);
-    if (p % r != 0) {
-        std::cout << "-1\n";
-    } else {
-        y = (y % (w / r) + (w / r)) % (w / r);
-        y *= p % w / r;
-        
-        if (x + y > n) {
-            std::cout << "-1\n";
-        } else {
-            std::cout << x << ' ' << y << ' ' << n - x - y << '\n';
+// 求前缀子串的最大 border
+struct Next:vc<i32>{
+    // 构建 next 数组 O(n)
+    Next(const char* s,i32 n):vc<i32>(n+1){
+        auto&p=*this;
+        for(int i=2,j=0;i<=n;++i){
+            while(j&&s[i]!=s[j+1]) j=p[j];
+            if(s[i]==s[j+1]) j++;
+            p[i]=j;
         }
     }
+};
+
+int32_t main() {
+    std::string s; std::cin >> s;
+    i32 n = s.length();
+    s = ' ' + s;
+    Next nxt(s.data(), n);
+    vc<i32> cnt(n + 1);
+    for (i32 i = 1; i <= n; ++i) {
+        cnt[nxt[i]]++;
+    }
+    auto G = vcc<i32>(n + 1);
+    for (i32 i = 1; i <= n; ++i) {
+        if (nxt[i]) {
+            G[nxt[nxt[i]]].pb(nxt[i]);
+        }
+    }
+    for (i32 i = 0; i <= n; ++i) {
+        std::sort(all(G[i]));
+        G[i].erase(std::unique(all(G[i])), G[i].end());
+    }
+    std::function<void(i32)> dfs = [&](i32 u) -> void{
+        for (auto v: G[u]) {
+            du(u, v);
+            dfs(v);
+            cnt[u] += cnt[v];
+        }
+    };
+    dfs(0);
+    vc<std::tuple<i32, i32>>ans;
+    for (i32 u = nxt[n]; u; u = nxt[u]) {
+        ans.pb(u, cnt[u] + 1);
+    }
+    std::reverse(all(ans));
+    std::cout << ans.size() + 1 << '\n';
+    for (auto [p, c]: ans) {
+        std::cout << p << ' ' << c << '\n';
+    }
+    std::cout << n << ' ' << 1 << '\n';
     return 0;
 }

@@ -31,31 +31,55 @@ ld const EPS = 1e-8;
 ld const PI = std::acos((ld)-1.0);
 i64 const mod = 998244353;
 
-// 函数功能: 求 x, y, st. a * x + b * y = gcd(a, b)
-// 返回 g = gcd(a, b), x, y
-// x = x_0 + b / g * k, y = y_0 + a / g * k
-i64 exgcd(i64 a, i64 b, i64 &x, i64 &y) {
-    if (!b) return x = 1, y = 0, a;
-    i64 d = exgcd(b, a % b, x, y), t = x;
-    x = y, y = t - (a / b) * y;
-    return d;
-}
+struct SGT {
+    using node = std::array<i32, 3>; // good, left, right
+    vc<node> A;
+    static node merge(node const& l, node const& r) {
+        node ret{};
+        i32 extra = std::min(l[1], r[2]);
+        ret[0] = l[0] + r[0] + extra;
+        ret[1] = l[1] + r[1] - extra;
+        ret[2] = l[2] + r[2] - extra;
+        return ret;
+    }
+    void pushup(i32 ni) {
+        A[ni] = merge(A[ni << 1], A[ni << 1 | 1]);
+    }
+    void build(i32 ni, i32 nl, i32 nr, std::string const& s) {
+        if (nl == nr) {
+            if (s[nl] == '(') A[ni][1] = 1;
+            if (s[nl] == ')') A[ni][2] = 1;
+            return ;
+        }
+        i32 mid = (nl + nr) >> 1;
+        build(ni << 1, nl, mid, s);
+        build(ni << 1 | 1, mid + 1, nr, s);
+        pushup(ni);
+    }
+    SGT(std::string const& s, i32 n): A(n << 2 | 3) {
+        build(1, 1, n, s);
+    }
+    node query(i32 ni, i32 nl, i32 nr, i32 l, i32 r) {
+        if (l <= nl && nr <= r) {
+            return A[ni];
+        }
+        i32 mid = (nl + nr) >> 1;
+        node ret{};
+        if (l <= mid) ret = merge(ret, query(ni << 1, nl, mid, l, r));
+        if (r >  mid) ret = merge(ret, query(ni << 1 | 1, mid + 1, nr, l, r));
+        return ret;
+    }
+};
 
 int32_t main() {
-    i64 n, p, w, d; std::cin >> n >> p >> w >> d;
-    i64 x = -1, y = -1;
-    i64 r = exgcd(w, d, x, y);
-    if (p % r != 0) {
-        std::cout << "-1\n";
-    } else {
-        y = (y % (w / r) + (w / r)) % (w / r);
-        y *= p % w / r;
-        
-        if (x + y > n) {
-            std::cout << "-1\n";
-        } else {
-            std::cout << x << ' ' << y << ' ' << n - x - y << '\n';
-        }
+    std::string s; std::cin >> s;
+    i32 n = s.length();
+    s = ' ' + s;
+    SGT sgt(s, n);
+    i32 q; std::cin >> q;
+    while (q--) {
+        i32 l, r; std::cin >> l >> r;
+        std::cout << sgt.query(1, 1, n, l, r)[0] * 2 << '\n';
     }
     return 0;
 }

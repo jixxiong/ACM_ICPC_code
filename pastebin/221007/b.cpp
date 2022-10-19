@@ -31,31 +31,20 @@ ld const EPS = 1e-8;
 ld const PI = std::acos((ld)-1.0);
 i64 const mod = 998244353;
 
-// 函数功能: 求 x, y, st. a * x + b * y = gcd(a, b)
-// 返回 g = gcd(a, b), x, y
-// x = x_0 + b / g * k, y = y_0 + a / g * k
-i64 exgcd(i64 a, i64 b, i64 &x, i64 &y) {
-    if (!b) return x = 1, y = 0, a;
-    i64 d = exgcd(b, a % b, x, y), t = x;
-    x = y, y = t - (a / b) * y;
-    return d;
+auto cal(i64 x) -> i64 {
+    if (x == 0) return 0;
+    i64 t = std::sqrt((ld)x);
+    i64 ans = 3 * (t - 1) + 1;
+    if (t * (t + 1) <= x) ans++;
+    if (t * (t + 2) <= x) ans++;
+    return ans;
 }
 
 int32_t main() {
-    i64 n, p, w, d; std::cin >> n >> p >> w >> d;
-    i64 x = -1, y = -1;
-    i64 r = exgcd(w, d, x, y);
-    if (p % r != 0) {
-        std::cout << "-1\n";
-    } else {
-        y = (y % (w / r) + (w / r)) % (w / r);
-        y *= p % w / r;
-        
-        if (x + y > n) {
-            std::cout << "-1\n";
-        } else {
-            std::cout << x << ' ' << y << ' ' << n - x - y << '\n';
-        }
+    i32 T; std::cin >> T;
+    while (T--) {
+        i64 l, r; std::cin >> l >> r;
+        std::cout << cal(r) - cal(l - 1) << '\n';
     }
     return 0;
 }

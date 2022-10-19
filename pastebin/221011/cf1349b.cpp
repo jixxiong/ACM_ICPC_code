@@ -31,31 +31,42 @@ ld const EPS = 1e-8;
 ld const PI = std::acos((ld)-1.0);
 i64 const mod = 998244353;
 
-// 函数功能: 求 x, y, st. a * x + b * y = gcd(a, b)
-// 返回 g = gcd(a, b), x, y
-// x = x_0 + b / g * k, y = y_0 + a / g * k
-i64 exgcd(i64 a, i64 b, i64 &x, i64 &y) {
-    if (!b) return x = 1, y = 0, a;
-    i64 d = exgcd(b, a % b, x, y), t = x;
-    x = y, y = t - (a / b) * y;
-    return d;
-}
-
 int32_t main() {
-    i64 n, p, w, d; std::cin >> n >> p >> w >> d;
-    i64 x = -1, y = -1;
-    i64 r = exgcd(w, d, x, y);
-    if (p % r != 0) {
-        std::cout << "-1\n";
-    } else {
-        y = (y % (w / r) + (w / r)) % (w / r);
-        y *= p % w / r;
-        
-        if (x + y > n) {
-            std::cout << "-1\n";
-        } else {
-            std::cout << x << ' ' << y << ' ' << n - x - y << '\n';
+    i32 T; std::cin >> T;
+    while (T--) {
+        i32 n, k; std::cin >> n >> k;
+        vc<i32> A(n + 2);
+        bool exists = false;
+        for (i32 i = 1; i <= n; ++i) {
+            std::cin >> A[i];
+            if (A[i] == k) A[i] = 1, exists = true;
+            else if (A[i] < k) A[i] = 0;
+            else A[i] = 2;
         }
+        if (!exists) {
+            std::cout << "NO\n";
+            continue;
+        }
+        bool ok = n == 1 && A[1] == 1;
+        for (i32 i = 1; i <= n; ++i) {
+            if (A[i] == 1 && (A[i - 1] >= 1 || A[i + 1] >= 1)) {
+                ok = true;
+            }
+        }
+        for (i32 i = 3; i <= n; ++i) {
+            if ((A[i - 2] == 1) + (A[i - 1] == 1) + (A[i] == 1) >= 2) {
+                ok = true;
+            }
+        }
+        for (i32 i = 3; i <= n; ++i) {
+            std::array<i32, 3> tmp{A[i - 2], A[i - 1], A[i]};
+            std::sort(tmp.begin(), tmp.end());
+            if (tmp == std::array<i32, 3>{0, 1, 2} ||
+                tmp == std::array<i32, 3>{0, 2, 2}) {
+                ok = true;
+            }
+        }
+        std::cout << (ok ? "YES" : "NO") << '\n';
     }
     return 0;
 }

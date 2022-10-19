@@ -31,31 +31,44 @@ ld const EPS = 1e-8;
 ld const PI = std::acos((ld)-1.0);
 i64 const mod = 998244353;
 
-// 函数功能: 求 x, y, st. a * x + b * y = gcd(a, b)
-// 返回 g = gcd(a, b), x, y
-// x = x_0 + b / g * k, y = y_0 + a / g * k
-i64 exgcd(i64 a, i64 b, i64 &x, i64 &y) {
-    if (!b) return x = 1, y = 0, a;
-    i64 d = exgcd(b, a % b, x, y), t = x;
-    x = y, y = t - (a / b) * y;
-    return d;
-}
+struct SparseTable {
+    vvc<i32> A;
+    SparseTable(vc<i32> const& arr, i32 n): A(std::__lg(n) + 1, vc<i32>(n + 1)) {
+        A[0] = arr;
+        for (i32 j = 1; j <= std::__lg(n); ++j) {
+            for (i32 i = 1; i + (1 << j) - 1 <= n; ++i) {
+                A[j][i] = std::min(A[j - 1][i], A[j - 1][i + (1 << (j - 1))]);
+            }
+        }
+    }
+    i32 get(i32 l, i32 r) {
+        assert(l <= r);
+        i32 s = std::__lg(r - l + 1);
+        return std::min(A[s][l], A[s][r - (1 << s) + 1]);
+    }
+};
 
 int32_t main() {
-    i64 n, p, w, d; std::cin >> n >> p >> w >> d;
-    i64 x = -1, y = -1;
-    i64 r = exgcd(w, d, x, y);
-    if (p % r != 0) {
-        std::cout << "-1\n";
-    } else {
-        y = (y % (w / r) + (w / r)) % (w / r);
-        y *= p % w / r;
-        
-        if (x + y > n) {
-            std::cout << "-1\n";
-        } else {
-            std::cout << x << ' ' << y << ' ' << n - x - y << '\n';
+    i32 T; std::cin >> T;
+    while (T--) {
+        i32 n; std::cin >> n;
+        vc<i32> A(n + 1);
+        for (i32 i = 1; i <= n; ++i) {
+            std::cin >> A[i];
+            A[i] -= i;
         }
+        SparseTable st(A, n);
+        i64 ans = 0;
+        for (i32 i = 1; i <= n; ++i) {
+            i32 l = i - 1, r = n + 1;
+            while (l + 1 < r) {
+                i32 mid = (l + r) >> 1;
+                if (st.get(i, mid) > -i) l = mid;
+                else r = mid;
+            }
+            ans += l - i + 1;
+        }
+        std::cout << ans << '\n';
     }
     return 0;
 }

@@ -31,31 +31,24 @@ ld const EPS = 1e-8;
 ld const PI = std::acos((ld)-1.0);
 i64 const mod = 998244353;
 
-// 函数功能: 求 x, y, st. a * x + b * y = gcd(a, b)
-// 返回 g = gcd(a, b), x, y
-// x = x_0 + b / g * k, y = y_0 + a / g * k
-i64 exgcd(i64 a, i64 b, i64 &x, i64 &y) {
-    if (!b) return x = 1, y = 0, a;
-    i64 d = exgcd(b, a % b, x, y), t = x;
-    x = y, y = t - (a / b) * y;
-    return d;
-}
-
 int32_t main() {
-    i64 n, p, w, d; std::cin >> n >> p >> w >> d;
-    i64 x = -1, y = -1;
-    i64 r = exgcd(w, d, x, y);
-    if (p % r != 0) {
-        std::cout << "-1\n";
-    } else {
-        y = (y % (w / r) + (w / r)) % (w / r);
-        y *= p % w / r;
-        
-        if (x + y > n) {
-            std::cout << "-1\n";
-        } else {
-            std::cout << x << ' ' << y << ' ' << n - x - y << '\n';
+    i32 T; std::cin >> T;
+    while (T--) {
+        i32 n; std::cin >> n;
+        vc<i32> A(n + 1);
+        vc<i32> one(n + 2), zero(n + 2);
+        for (i32 i = 1; i <= n; ++i) {
+            std::cin >> A[i];
+            one[i] = one[i - 1] + (A[i] == 1);
         }
+        for (i32 i = n; i >= 1; --i) {
+            zero[i] = zero[i + 1] + (A[i] == 0);
+        }
+        i32 ans = n;
+        for (i32 i = 0; i <= n; ++i) {
+            ans = std::min(ans, std::max(one[i], zero[i + 1]));
+        }
+        std::cout << ans << '\n';
     }
     return 0;
 }

@@ -31,31 +31,38 @@ ld const EPS = 1e-8;
 ld const PI = std::acos((ld)-1.0);
 i64 const mod = 998244353;
 
-// 函数功能: 求 x, y, st. a * x + b * y = gcd(a, b)
-// 返回 g = gcd(a, b), x, y
-// x = x_0 + b / g * k, y = y_0 + a / g * k
-i64 exgcd(i64 a, i64 b, i64 &x, i64 &y) {
-    if (!b) return x = 1, y = 0, a;
-    i64 d = exgcd(b, a % b, x, y), t = x;
-    x = y, y = t - (a / b) * y;
-    return d;
-}
-
 int32_t main() {
-    i64 n, p, w, d; std::cin >> n >> p >> w >> d;
-    i64 x = -1, y = -1;
-    i64 r = exgcd(w, d, x, y);
-    if (p % r != 0) {
+    i32 n, m; std::cin >> n >> m;
+    auto G = vcc<std::pair<i32, i32>>(n + 1);
+    for (i32 i = 1; i <= m; ++i) {
+        i32 u, v, d; std::cin >> u >> v >> d;
+        G[u].pb(std::pair<i32, i32>(v, d));
+        G[v].pb(std::pair<i32, i32>(u, d));
+    }
+    std::priority_queue<std::pair<i64, i32>> q;
+    vc<i64> dis(n + 1, INF<i64>());
+    dis[1] = 0; q.push({0, 1});
+    vc<i32> pre(n + 1);
+    while (!q.empty()) {
+        auto [fi, u] = q.top(); q.pop();
+        if (-fi != dis[u]) continue;
+        for (auto [v, d]: G[u]) {
+            if (dis[v] > dis[u] + d) {
+                q.push({-(dis[v] = dis[u] + d), v});
+                pre[v] = u;
+            }
+        }
+    }
+    if (pre[n] == 0) {
         std::cout << "-1\n";
     } else {
-        y = (y % (w / r) + (w / r)) % (w / r);
-        y *= p % w / r;
-        
-        if (x + y > n) {
-            std::cout << "-1\n";
-        } else {
-            std::cout << x << ' ' << y << ' ' << n - x - y << '\n';
+        vc<i32> stk;
+        for (i32 u = n; u; u = pre[u]) stk.pb(u);
+        while (!stk.empty()) {
+            std::cout << stk.back() << ' ';
+            stk.pop_back();
         }
+        std::cout << '\n';
     }
     return 0;
 }

@@ -31,30 +31,38 @@ ld const EPS = 1e-8;
 ld const PI = std::acos((ld)-1.0);
 i64 const mod = 998244353;
 
-// 函数功能: 求 x, y, st. a * x + b * y = gcd(a, b)
-// 返回 g = gcd(a, b), x, y
-// x = x_0 + b / g * k, y = y_0 + a / g * k
-i64 exgcd(i64 a, i64 b, i64 &x, i64 &y) {
-    if (!b) return x = 1, y = 0, a;
-    i64 d = exgcd(b, a % b, x, y), t = x;
-    x = y, y = t - (a / b) * y;
-    return d;
+auto split(vc<i32> const& vec) -> std::tuple<vc<i32>, vc<i32>> {
+    vc<i32> A, B;
+    for (i32 i = 0; i < (i32)vec.size(); ++i) {
+        if (i & 1) A.pb(i);
+        else B.pb(i);
+    }
+    return {A, B};
 }
 
 int32_t main() {
-    i64 n, p, w, d; std::cin >> n >> p >> w >> d;
-    i64 x = -1, y = -1;
-    i64 r = exgcd(w, d, x, y);
-    if (p % r != 0) {
-        std::cout << "-1\n";
-    } else {
-        y = (y % (w / r) + (w / r)) % (w / r);
-        y *= p % w / r;
-        
-        if (x + y > n) {
-            std::cout << "-1\n";
+    i32 n; std::cin >> n;
+    vc<i32> S(n);
+    std::iota(all(S), 1);
+    while ((i32)S.size() >= 2) {
+        auto [A, B] = split(S);
+        std::array<bool, 4> ans{};
+        for (i32 i = 0; i < 4; ++i) {
+            std::cout << "? ";
+            bool first = true;
+            for (auto x: (i < 2 ? A : B)) {
+                if (first) first = false;
+                else std::cout << ' ';
+                std::cout << x;
+            }
+            std::cout << std::endl;
+            std::string ret; std::cin >> ret;
+            ans[i] = ret == "YES";
+        }
+        if (ans[1] ^ ans[2]) {
+            S = ans[1] ? A : B;
         } else {
-            std::cout << x << ' ' << y << ' ' << n - x - y << '\n';
+            
         }
     }
     return 0;
