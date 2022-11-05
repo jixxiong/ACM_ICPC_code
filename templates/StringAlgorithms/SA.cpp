@@ -20,31 +20,28 @@ struct SparseTable{
         }
     }
     T get(int l,int r){
-        assert(l<=r); 
+        assert(l<=r);
         int s=std::__lg(r-l+1);
         return merge(st[s][l],st[s][r-(1<<s)+1]);
     }
 };
 
 // O(n) => suffix array
-// 下标从 1 开始 str[0] 空出来，str[n+1] 会被赋值成 0, 要确保已经申请了这个内存单元否则 RE
+// 下标从 1 开始，str[n+1] 会被赋值成 0, 要确保已经申请了这个内存单元否则 RE
 // 若对整数数组求SA应当先进行离散化
-template<typename T=char,int sigma=300>
+template<typename T=char,int sigma=200>
 struct SuffixArray{
     int const SIZE;
     std::vector<int>sa,rk,ht;
     SuffixArray(T* str,int n):SIZE(std::max(sigma,n)+2),sa(SIZE),rk(SIZE),ht(SIZE){
         std::vector<int>s(SIZE<<1),t(SIZE<<1),p(SIZE),cr(SIZE),ct(SIZE);
         str[++n]=0,++str;
-        auto pre_work=[&](){
-            int m=*std::max_element(str,str+n);
-            std::fill_n(&rk[0],m+1,0);
-            for(int i=0;i<n;i++) rk[(int)str[i]]=1;
-            for(int i=0;i<m;i++) rk[i+1]+=rk[i];
-            for(int i=0;i<n;i++) s[i]=rk[(int)str[i]]-1;
-            return rk[m];
-        };
-        int m=pre_work();
+        int m=*std::max_element(str,str+n);
+        std::fill_n(rk.data(),m+1,0);
+        for(int i=0;i<n;i++) rk[(int)str[i]]=1;
+        for(int i=0;i<m;i++) rk[i+1]+=rk[i];
+        for(int i=0;i<n;i++) s[i]=rk[(int)str[i]]-1;
+        m=rk[m];
         std::function<void(int,int,int*,int*,int*)>sais=[&](int n,int m,int* s,int* t,int* p) {
             int n1=t[n-1]=0,ch=rk[0]=-1,*s1=s+n;
             auto ps=[&](int x){ sa[cr[s[x]]--]=x; };
@@ -69,8 +66,8 @@ struct SuffixArray{
                         ch++;
                     }else for(int j=p[x],k=p[y];j<=p[x+1];j++,k++){
                         if((s[j]<<1|t[j])!=(s[k]<<1|t[k])){
-                            ch++; 
-                            break; 
+                            ch++;
+                            break;
                         }
                     }
                     s1[y=x]=ch;
@@ -94,8 +91,8 @@ struct SuffixArray{
 };
 
 // O(n) => suffix array
-// 下标从 1 开始 str[0] 空出来，str[n+1] 会被赋值成 0, 要确保已经申请了这个内存单元否则 RE
-// O(nlogn) => ST 表预处理 SA 的 ht 数组的区间最小值 => 求 lcp 
+// 下标从 1 开始，str[n+1] 会被赋值成 0, 要确保已经申请了这个内存单元否则 RE
+// O(nlogn) => ST 表预处理 SA 的 ht 数组的区间最小值 => 求 lcp
 // 若对整数数组求SA应当先进行离散化
 template<typename T=char,int sigma=300>
 struct SA_LCP:SuffixArray<T,sigma>,SparseTable<int>{
@@ -117,7 +114,7 @@ int32_t main(){
     // 串长为 n
     int n; std::cin>>n;
     // 读入串 s
-    std::string s; std::cin>>s; 
+    std::string s; std::cin>>s;
     // 调整一下 s，下标从 1 开始
     // 并确保 s[n+1] 的空间申请了
     s=" "+s+" ";

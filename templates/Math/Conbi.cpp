@@ -11,7 +11,7 @@ using ll=long long;
 
 // pre=>O(n^2), qry=>O(1), any mod number
 struct conbi_dp{
-    const int p=1000000007; 
+    const int p=1000000007;
     std::vector<std::vector<int>>dp;
     conbi_dp(int n):dp(n+1,std::vector<int>(n+1)){
         for(int i=0;i<=n;++i)

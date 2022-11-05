@@ -31,13 +31,6 @@ ld const EPS=1e-8;
 ld const PI=std::acos((ld)-1.0);
 i64 const mod=998244353;
 
-i64 exgcd(i64 a, i64 b, i64 &x, i64 &y) {
-    if (!b) return x = 1, y = 0, a;
-    i64 d = exgcd(b, a % b, x, y), t = x;
-    x = y, y = t - (a / b) * y;
-    return d;
-}
-
 struct my_hash{
     size_t operator()(size_t x)const{
         static const size_t random_shift=std::chrono::steady_clock::now().time_since_epoch().count();
@@ -57,77 +50,53 @@ i64 qpow(i64 x,i64 y,i64 m){
     return ret;
 }
 
-
-i64 BSGS(i64 S, i64 A, i64 B, i64 G, i64 P){
+i64 BSGS(i64 A, i64 B, i64 P){
+    if (B == 1) return 0;
     static std::unordered_map<i64, i64, my_hash> hs; hs.clear();
     i64 t = (i64)sqrt(P) + 1;
-    for (i64 i = 0, cur = G; i < t; ++i)
-        hs[cur] = i, cur = (cur * A % P + B) % P;
-    i64 A_K = qpow(A, t, P);
-    i64 A_B = 1;
-    for (i64 i = 1, cur = A; i < t; ++i)
-        A_B = (A_B + cur) % P, cur = cur * A % P;
-    for (i64 a = 1, cur = (S * A_K % P + A_B * B % P) % P; a <= t; ++a) {
+    for (i64 i = 0, cur = B; i < t; ++i)
+        hs[cur] = i, cur = cur * A % P;
+    i64 GS = qpow(A, t, P);
+    for (i64 a = 1, cur = GS; a <= t; ++a) {
         auto it = hs.find(cur);
         if(it != hs.end()) return a * t - it->second;
-        cur = (cur * A_K % P + A_B * B % P) % P;
+        cur = cur * GS % P;
     }
     return -1;
 }
-
 
 int32_t main(){
     i32 T; std::cin >> T;
     while (T--) {
         i64 P, A, B, S, G; std::cin >> P >> A >> B >> S >> G;
-        if (A == 0) {
-            if (G == S) {
-                std::cout << "0\n";
-            } else if (G == B) {
+        if (S == G) {
+          std::cout << "0\n";
+        } else if (A == 0) {
+            if (G == B) {
                 std::cout << "1\n";
             } else {
                 std::cout << "-1\n";
             }
-        } if (A == 1) {
-            // B * x + P * y = G - S
-            // a: B, b: P, c: G - S
-            i64 a = B, b = P, c = ((G - S) % P + P) % P;
-            i64 x, y;
-            i64 g = exgcd(a, b, x, y);
-            if (c % g != 0) {
+        } else if (A == 1) {
+            // G = S + i * B
+            // i = (G - S) / B
+            if (B == 0) {
                 std::cout << "-1\n";
             } else {
-                i64 d = c / g;
-                x = (x % (b / g) + b / g) % (b / g);
-                x *= d;
-                std::cout << x << '\n';
+                std::cout << (G - S + P) % P * qpow(B, P - 2, P) % P << '\n';
             }
         } else {
             // x_0 = S
             // x_i = A * x_{i - 1} + B (mod P)
-            i64 ret = BSGS(S, A, B, G, P);
+            // G = A ^ i * S + (A ^ i - 1) / (A - 1) * B
+            // A ^ i * (S + B / (A - 1)) - B / (A - 1) = G
+            // A ^ i = (G + B / (A - 1)) / (S + B / (A - 1))
+            i64 B_over_A_minus_1 = B * qpow(A - 1, P - 2, P) % P;
+            i64 fz = (G + B_over_A_minus_1) % P;
+            i64 fm = qpow((S + B_over_A_minus_1) % P, P - 2, P);
+            i64 ret = BSGS(A, fz * fm % P, P);
             std::cout << ret << '\n';
         }
     }
     return 0;
 }
-
-/*
-
-if (A == 1) {
-    // B * x + P * y = G - S
-    // a: B, b: P, c: G - S
-    i64 a = B, b = P, c = ((G - S) % P + P) % P;
-    i64 x, y;
-    i64 g = exgcd(a, b, x, y);
-    if (c % g != 0) {
-        std::cout << "-1\n";
-    } else {
-        i64 d = c / g;
-        x = (x % (b / g) + b / g) % (b / g);
-        x *= d;
-        std::cout << x << '\n';
-    }
-}
-
-*/

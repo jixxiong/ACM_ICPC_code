@@ -28,12 +28,12 @@
 
 # Executables
 *.exe
-*.out
+# *.out
 *.app
 
 
 # in/output
-*.txt
+# *.txt
 
 # batexe
 *.bat

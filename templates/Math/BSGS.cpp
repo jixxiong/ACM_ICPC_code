@@ -45,6 +45,21 @@ ll BSGS(ll a,ll b,ll m){
     return -1;
 }
 
+// i64 BSGS(i64 A, i64 B, i64 P){
+//     if (B == 1) return 0;
+//     static std::unordered_map<i64, i64, my_hash> hs; hs.clear();
+//     i64 t = (i64)sqrt(P) + 1;
+//     for (i64 i = 0, cur = B; i < t; ++i)
+//         hs[cur] = i, cur = cur * A % P;
+//     i64 GS = qpow(A, t, P);
+//     for (i64 a = 1, cur = GS; a <= t; ++a) {
+//         auto it = hs.find(cur);
+//         if(it != hs.end()) return a * t - it->second;
+//         cur = cur * GS % P;
+//     }
+//     return -1;
+// }
+
 int main(){ // hdu6959
     const int p=998244353;
     int T; std::cin>>T;
