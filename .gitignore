@@ -40,5 +40,5 @@
 
 *.exce
 
-*.idea
-*.vscode
+.idea/
+.vscode/
